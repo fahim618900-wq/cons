@@ -3,189 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML শিখুন - বাংলা টিউটোরিয়াল</title>
+    <title>TechoSoft - আপনার ডিজিটাল সমাধান পার্টনার</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>HTML.Guide</h1>
-                <span>বাংলা টিউটোরিয়াল</span>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>TechoSoft</h2>
             </div>
-            <nav class="navbar">
-                <ul class="nav-menu">
-                    <li><a href="#" class="active">হোম</a></li>
-                    <li><a href="#">HTML টিউটোরিয়াল</a></li>
-                    <li><a href="#">CSS টিউটোরিয়াল</a></li>
-                    <li><a href="#">JavaScript</a></li>
-                    <li><a href="#">প্রোজেক্ট</a></li>
-                    <li><a href="#">রেফারেন্স</a></li>
-                </ul>
-            </nav>
-            <div class="search-box">
-                <input type="text" placeholder="খুঁজুন...">
-                <button>খুঁজুন</button>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">হোম</a>
+                <a href="#services" class="nav-link">সেবাসমূহ</a>
+                <a href="#about" class="nav-link">আমাদের সম্পর্কে</a>
+                <a href="#portfolio" class="nav-link">পোর্টফোলিও</a>
+                <a href="#contact" class="nav-link">যোগাযোগ</a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
-    </header>
+    </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
+    <section id="home" class="hero">
+        <div class="hero-container">
             <div class="hero-content">
-                <h1>HTML শিখুন সহজ বাংলায়</h1>
-                <p>সম্পূর্ণ বিনামূল্যে HTML, CSS এবং JavaScript শিখুন বাংলা ভাষায়। শুরু করুন আপনার ওয়েব ডেভেলপমেন্ট জার্নি আজই!</p>
+                <h1>ডিজিটাল বিপ্লবে <span>আপনার বিশ্বস্ত পার্টনার</span></h1>
+                <p>আমরা প্রদান করি আধুনিক ওয়েব সলিউশন, মোবাইল অ্যাপ ডেভেলপমেন্ট এবং ডিজিটাল মার্কেটিং সেবা</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn primary">শুরু করুন</a>
-                    <a href="#" class="btn secondary">টিউটোরিয়াল দেখুন</a>
+                    <a href="#contact" class="btn btn-primary">নিখুত估价 পান</a>
+                    <a href="#portfolio" class="btn btn-secondary">আমাদের কাজ দেখুন</a>
                 </div>
             </div>
             <div class="hero-image">
-                <div class="code-window">
-                    <div class="window-header">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
+                <img src="https://images.unsplash.com/photo-1556655848-f3a7046a8c2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="TechoSoft Hero">
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">আমাদের সেবাসমূহ</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-code"></i>
+                    <h3>ওয়েব ডেভেলপমেন্ট</h3>
+                    <p>আধুনিক ও রেস্পন্সিভ ওয়েবসাইট ডেভেলপমেন্ট</p>
+                    <ul>
+                        <li>ই-কমার্স সাইট</li>
+                        <li>ক cooperateওয়েবসাইট</li>
+                        <li>ল্যান্ডিং পেজ</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>মোবাইল অ্যাপ</h3>
+                    <p>Android ও iOS এর জন্য নেটিভ ও হাইব্রিড অ্যাপ</p>
+                    <ul>
+                        <li>React Native</li>
+                        <li>Flutter</li>
+                        <li>iOS & Android</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>ডিজিটাল মার্কেটিং</h3>
+                    <p>আপনার ব্যবসাকে অনলাইনে এগিয়ে নিন</p>
+                    <ul>
+                        <li>SEO অপ্টিমাইজেশন</li>
+                        <li>সোশ্যাল মিডিয়া মার্কেটিং</li>
+                        <li>কনটেন্ট মার্কেটিং</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>আমাদের গল্প</h2>
+                    <p>২০২০ সালে প্রতিষ্ঠিত, TechoSoft已经成为 বাংলাদেশের领先的ডিজিটাল সলিউশন প্রদানকারী। আমরা বিশ্বাস করি প্রযুক্তির মাধ্যমে ব্যবসার রূপান্তর সম্ভব।</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <h3>50+</h3>
+                            <p>সফল প্রোজেক্ট</p>
+                        </div>
+                        <div class="stat">
+                            <h3>30+</h3>
+                            <p>সন্তুষ্ট ক্লায়েন্ট</p>
+                        </div>
+                        <div class="stat">
+                            <h3>5+</h3>
+                            <p>বছরের অভিজ্ঞতা</p>
+                        </div>
                     </div>
-                    <div class="code-content">
-                        <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;আমার প্রথম ওয়েবসাইট&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;h1&gt;স্বাগতম!&lt;/h1&gt;
-    &lt;p&gt;এটি আমার প্রথম ওয়েবপেজ&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Our Team">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">আমাদের কাজ</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1556655848-f3a7046a8c2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Project 1">
+                    <div class="portfolio-overlay">
+                        <h3>ই-কমার্স প্ল্যাটফর্ম</h3>
+                        <p>পূর্ণাঙ্গ অনলাইন শপিং সলিউশন</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Project 2">
+                    <div class="portfolio-overlay">
+                        <h3>মোবাইল ব্যাংকিং অ্যাপ</h3>
+                        <p>সুরক্ষিত ফিনান্সিয়াল অ্যাপ্লিকেশন</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Project 3">
+                    <div class="portfolio-overlay">
+                        <h3>ক cooperateপোরেট ওয়েবসাইট</h3>
+                        <p>আধুনিক ব্যবসায়িক ওয়েবসাইট</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Tutorial Sections -->
-    <section class="tutorials">
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
         <div class="container">
-            <h2>HTML টিউটোরিয়াল</h2>
-            <div class="tutorial-grid">
-                <div class="tutorial-card">
-                    <div class="card-icon">📝</div>
-                    <h3>HTML বেসিক</h3>
-                    <p>HTML এর基本 ধারণা, ট্যাগ, এলিমেন্ট এবং অ্যাট্রিবিউট সম্পর্কে জানুন</p>
-                    <a href="#" class="card-link">শিখুন →</a>
-                </div>
-                <div class="tutorial-card">
-                    <div class="card-icon">📄</div>
-                    <h3>HTML ফর্ম</h3>
-                    <p>ইনপুট ফিল্ড, বাটন এবং validation সহ ফর্ম তৈরি করা শিখুন</p>
-                    <a href="#" class="card-link">শিখুন →</a>
-                </div>
-                <div class="tutorial-card">
-                    <div class="card-icon">🖼️</div>
-                    <h3>HTML মাল্টিমিডিয়া</h3>
-                    <p>ইমেজ, অডিও, ভিডিও এবং অন্যান্য মিডিয়া যোগ করা শিখুন</p>
-                    <a href="#" class="card-link">শিখুন →</a>
-                </div>
-                <div class="tutorial-card">
-                    <div class="card-icon">🎯</div>
-                    <h3>HTML সেমান্টিক</h3>
-                    <p>সেমান্টিক HTML ব্যবহার করে বেটার স্ট্রাকচার তৈরি করুন</p>
-                    <a href="#" class="card-link">শিখুন →</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Examples Section -->
-    <section class="examples">
-        <div class="container">
-            <h2>HTML উদাহরণ</h2>
-            <div class="example-tabs">
-                <button class="tab-btn active" data-tab="basic">বেসিক উদাহরণ</button>
-                <button class="tab-btn" data-tab="form">ফর্ম উদাহরণ</button>
-                <button class="tab-btn" data-tab="layout">লেআউট উদাহরণ</button>
-            </div>
-            <div class="tab-content active" id="basic">
-                <div class="code-example">
-                    <div class="example-header">
-                        <h4>সরল HTML পেজ</h4>
-                        <button class="copy-btn" data-code="basic-code">কপি করুন</button>
+            <h2 class="section-title">যোগাযোগ করুন</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>আমাদের সাথে যোগাযোগ করুন</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>গুলশান, ঢাকা, বাংলাদেশ</p>
                     </div>
-                    <pre id="basic-code"><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;আমার ওয়েবসাইট&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;header&gt;
-        &lt;h1&gt;আমার ওয়েবসাইট&lt;/h1&gt;
-        &lt;nav&gt;
-            &lt;a href="#"&gt;হোম&lt;/a&gt;
-            &lt;a href="#"&gt;আমাদের সম্পর্কে&lt;/a&gt;
-        &lt;/nav&gt;
-    &lt;/header&gt;
-    
-    &lt;main&gt;
-        &lt;h2&gt;স্বাগতম!&lt;/h2&gt;
-        &lt;p&gt;এটি একটি সাধারণ HTML পেজ।&lt;/p&gt;
-    &lt;/main&gt;
-    
-    &lt;footer&gt;
-        &lt;p&gt;কপিরাইট ২০২৩&lt;/p&gt;
-    &lt;/footer&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-                </div>
-            </div>
-            <div class="tab-content" id="form">
-                <div class="code-example">
-                    <div class="example-header">
-                        <h4>যোগাযোগ ফর্ম</h4>
-                        <button class="copy-btn" data-code="form-code">কপি করুন</button>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <p>+880 1XXX-XXXXXX</p>
                     </div>
-                    <pre id="form-code"><code>&lt;form action="/submit" method="post"&gt;
-    &lt;div&gt;
-        &lt;label for="name"&gt;নাম:&lt;/label&gt;
-        &lt;input type="text" id="name" name="name" required&gt;
-    &lt;/div&gt;
-    
-    &lt;div&gt;
-        &lt;label for="email"&gt;ইমেইল:&lt;/label&gt;
-        &lt;input type="email" id="email" name="email" required&gt;
-    &lt;/div&gt;
-    
-    &lt;div&gt;
-        &lt;label for="message"&gt;বার্তা:&lt;/label&gt;
-        &lt;textarea id="message" name="message" rows="4"&gt;&lt;/textarea&gt;
-    &lt;/div&gt;
-    
-    &lt;button type="submit"&gt;জমা দিন&lt;/button&gt;
-&lt;/form&gt;</code></pre>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>info@techosoft.com</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Resources Section -->
-    <section class="resources">
-        <div class="container">
-            <h2>উপকরণ</h2>
-            <div class="resource-list">
-                <div class="resource-item">
-                    <h3>HTML ট্যাগ রেফারেন্স</h3>
-                    <p>সমস্ত HTML ট্যাগের সম্পূর্ণ তালিকা এবং ব্যবহার</p>
-                </div>
-                <div class="resource-item">
-                    <h3>CSS প্রোপার্টি</h3>
-                    <p>CSS স্টাইলিং এর জন্য প্রয়োজনীয় সকল প্রোপার্টি</p>
-                </div>
-                <div class="resource-item">
-                    <h3>JavaScript রেফারেন্স</h3>
-                    <p>JavaScript ফাংশন, মেথড এবং ইভেন্ট সম্পর্কে জানুন</p>
-                </div>
+                <form class="contact-form">
+                    <input type="text" placeholder="আপনার নাম" required>
+                    <input type="email" placeholder="ইমেইল ঠিকানা" required>
+                    <input type="tel" placeholder="ফোন নম্বর">
+                    <textarea placeholder="আপনার মেসেজ" rows="5" required></textarea>
+                    <button type="submit" class="btn btn-primary">মেসেজ পাঠান</button>
+                </form>
             </div>
         </div>
     </section>
@@ -195,34 +185,32 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>HTML.Guide</h3>
-                    <p>বাংলা ভাষায় ওয়েব ডেভেলপমেন্ট শিখুন</p>
+                    <h3>TechoSoft</h3>
+                    <p>আপনার ডিজিটাল transformation এর বিশ্বস্ত পার্টনার</p>
                 </div>
                 <div class="footer-section">
-                    <h4>লিংক</h4>
-                    <ul>
-                        <li><a href="#">হোম</a></li>
-                        <li><a href="#">HTML টিউটোরিয়াল</a></li>
-                        <li><a href="#">CSS টিউটোরিয়াল</a></li>
-                        <li><a href="#">JavaScript</a></li>
-                    </ul>
+                    <h4>দ্রুত লিংক</h4>
+                    <a href="#home">হোম</a>
+                    <a href="#services">সেবাসমূহ</a>
+                    <a href="#about">আমাদের সম্পর্কে</a>
+                    <a href="#contact">যোগাযোগ</a>
                 </div>
                 <div class="footer-section">
-                    <h4>সম্পদ</h4>
-                    <ul>
-                        <li><a href="#">রেফারেন্স</a></li>
-                        <li><a href="#">উদাহরণ</a></li>
-                        <li><a href="#">প্রোজেক্ট</a></li>
-                        <li><a href="#">ব্লগ</a></li>
-                    </ul>
+                    <h4>সেবাসমূহ</h4>
+                    <a href="#">ওয়েব ডেভেলপমেন্ট</a>
+                    <a href="#">মোবাইল অ্যাপ</a>
+                    <a href="#">ডিজিটাল মার্কেটিং</a>
                 </div>
                 <div class="footer-section">
-                    <h4>যোগাযোগ</h4>
-                    <p>ইমেইল: contact@htmlguide.com</p>
+                    <h4>নিউজলেটার</h4>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="আপনার ইমেইল">
+                        <button type="submit">সাবস্ক্রাইব</button>
+                    </form>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; ২০২৩ HTML.Guide - সকল অধিকার সংরক্ষিত</p>
+                <p>&copy; ২০২৫ TechoSoft. সকল অধিকার সংরক্ষিত।</p>
             </div>
         </div>
     </footer>
