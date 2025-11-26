@@ -1,1 +1,232 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML শিখুন - বাংলা টিউটোরিয়াল</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>HTML.Guide</h1>
+                <span>বাংলা টিউটোরিয়াল</span>
+            </div>
+            <nav class="navbar">
+                <ul class="nav-menu">
+                    <li><a href="#" class="active">হোম</a></li>
+                    <li><a href="#">HTML টিউটোরিয়াল</a></li>
+                    <li><a href="#">CSS টিউটোরিয়াল</a></li>
+                    <li><a href="#">JavaScript</a></li>
+                    <li><a href="#">প্রোজেক্ট</a></li>
+                    <li><a href="#">রেফারেন্স</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="খুঁজুন...">
+                <button>খুঁজুন</button>
+            </div>
+        </div>
+    </header>
 
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>HTML শিখুন সহজ বাংলায়</h1>
+                <p>সম্পূর্ণ বিনামূল্যে HTML, CSS এবং JavaScript শিখুন বাংলা ভাষায়। শুরু করুন আপনার ওয়েব ডেভেলপমেন্ট জার্নি আজই!</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn primary">শুরু করুন</a>
+                    <a href="#" class="btn secondary">টিউটোরিয়াল দেখুন</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="code-window">
+                    <div class="window-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="code-content">
+                        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;আমার প্রথম ওয়েবসাইট&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;স্বাগতম!&lt;/h1&gt;
+    &lt;p&gt;এটি আমার প্রথম ওয়েবপেজ&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutorial Sections -->
+    <section class="tutorials">
+        <div class="container">
+            <h2>HTML টিউটোরিয়াল</h2>
+            <div class="tutorial-grid">
+                <div class="tutorial-card">
+                    <div class="card-icon">📝</div>
+                    <h3>HTML বেসিক</h3>
+                    <p>HTML এর基本 ধারণা, ট্যাগ, এলিমেন্ট এবং অ্যাট্রিবিউট সম্পর্কে জানুন</p>
+                    <a href="#" class="card-link">শিখুন →</a>
+                </div>
+                <div class="tutorial-card">
+                    <div class="card-icon">📄</div>
+                    <h3>HTML ফর্ম</h3>
+                    <p>ইনপুট ফিল্ড, বাটন এবং validation সহ ফর্ম তৈরি করা শিখুন</p>
+                    <a href="#" class="card-link">শিখুন →</a>
+                </div>
+                <div class="tutorial-card">
+                    <div class="card-icon">🖼️</div>
+                    <h3>HTML মাল্টিমিডিয়া</h3>
+                    <p>ইমেজ, অডিও, ভিডিও এবং অন্যান্য মিডিয়া যোগ করা শিখুন</p>
+                    <a href="#" class="card-link">শিখুন →</a>
+                </div>
+                <div class="tutorial-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>HTML সেমান্টিক</h3>
+                    <p>সেমান্টিক HTML ব্যবহার করে বেটার স্ট্রাকচার তৈরি করুন</p>
+                    <a href="#" class="card-link">শিখুন →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section class="examples">
+        <div class="container">
+            <h2>HTML উদাহরণ</h2>
+            <div class="example-tabs">
+                <button class="tab-btn active" data-tab="basic">বেসিক উদাহরণ</button>
+                <button class="tab-btn" data-tab="form">ফর্ম উদাহরণ</button>
+                <button class="tab-btn" data-tab="layout">লেআউট উদাহরণ</button>
+            </div>
+            <div class="tab-content active" id="basic">
+                <div class="code-example">
+                    <div class="example-header">
+                        <h4>সরল HTML পেজ</h4>
+                        <button class="copy-btn" data-code="basic-code">কপি করুন</button>
+                    </div>
+                    <pre id="basic-code"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;আমার ওয়েবসাইট&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;আমার ওয়েবসাইট&lt;/h1&gt;
+        &lt;nav&gt;
+            &lt;a href="#"&gt;হোম&lt;/a&gt;
+            &lt;a href="#"&gt;আমাদের সম্পর্কে&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+    
+    &lt;main&gt;
+        &lt;h2&gt;স্বাগতম!&lt;/h2&gt;
+        &lt;p&gt;এটি একটি সাধারণ HTML পেজ।&lt;/p&gt;
+    &lt;/main&gt;
+    
+    &lt;footer&gt;
+        &lt;p&gt;কপিরাইট ২০২৩&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+            </div>
+            <div class="tab-content" id="form">
+                <div class="code-example">
+                    <div class="example-header">
+                        <h4>যোগাযোগ ফর্ম</h4>
+                        <button class="copy-btn" data-code="form-code">কপি করুন</button>
+                    </div>
+                    <pre id="form-code"><code>&lt;form action="/submit" method="post"&gt;
+    &lt;div&gt;
+        &lt;label for="name"&gt;নাম:&lt;/label&gt;
+        &lt;input type="text" id="name" name="name" required&gt;
+    &lt;/div&gt;
+    
+    &lt;div&gt;
+        &lt;label for="email"&gt;ইমেইল:&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" required&gt;
+    &lt;/div&gt;
+    
+    &lt;div&gt;
+        &lt;label for="message"&gt;বার্তা:&lt;/label&gt;
+        &lt;textarea id="message" name="message" rows="4"&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit"&gt;জমা দিন&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="resources">
+        <div class="container">
+            <h2>উপকরণ</h2>
+            <div class="resource-list">
+                <div class="resource-item">
+                    <h3>HTML ট্যাগ রেফারেন্স</h3>
+                    <p>সমস্ত HTML ট্যাগের সম্পূর্ণ তালিকা এবং ব্যবহার</p>
+                </div>
+                <div class="resource-item">
+                    <h3>CSS প্রোপার্টি</h3>
+                    <p>CSS স্টাইলিং এর জন্য প্রয়োজনীয় সকল প্রোপার্টি</p>
+                </div>
+                <div class="resource-item">
+                    <h3>JavaScript রেফারেন্স</h3>
+                    <p>JavaScript ফাংশন, মেথড এবং ইভেন্ট সম্পর্কে জানুন</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>HTML.Guide</h3>
+                    <p>বাংলা ভাষায় ওয়েব ডেভেলপমেন্ট শিখুন</p>
+                </div>
+                <div class="footer-section">
+                    <h4>লিংক</h4>
+                    <ul>
+                        <li><a href="#">হোম</a></li>
+                        <li><a href="#">HTML টিউটোরিয়াল</a></li>
+                        <li><a href="#">CSS টিউটোরিয়াল</a></li>
+                        <li><a href="#">JavaScript</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>সম্পদ</h4>
+                    <ul>
+                        <li><a href="#">রেফারেন্স</a></li>
+                        <li><a href="#">উদাহরণ</a></li>
+                        <li><a href="#">প্রোজেক্ট</a></li>
+                        <li><a href="#">ব্লগ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>যোগাযোগ</h4>
+                    <p>ইমেইল: contact@htmlguide.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; ২০২৩ HTML.Guide - সকল অধিকার সংরক্ষিত</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
