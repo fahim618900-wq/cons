@@ -1,984 +1,611 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Notepad</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Notepad (Web)</title>
 
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
+  <!-- CDN Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.0/docx.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i {
-            font-size: 1.8rem;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .note-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-            transition: background-color 0.2s;
-        }
-
-        .btn:hover {
-            background-color: #2980b9;
-        }
-
-        .btn-delete {
-            background-color: #e74c3c;
-        }
-
-        .btn-delete:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-export {
-            background-color: #27ae60;
-        }
-
-        .btn-export:hover {
-            background-color: #219653;
-        }
-
-        .container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #ecf0f1;
-            padding: 20px;
-            overflow-y: auto;
-            border-right: 1px solid #dcdde1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .notes-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .note-item {
-            background-color: white;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            border-left: 4px solid #3498db;
-            transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .note-item:hover {
-            background-color: #f8f9fa;
-            transform: translateY(-2px);
-        }
-
-        .note-item.active {
-            background-color: #e3f2fd;
-            border-left-color: #1a73e8;
-        }
-
-        .note-item h3 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .note-item p {
-            font-size: 0.85rem;
-            color: #666;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .note-date {
-            font-size: 0.75rem;
-            color: #95a5a6;
-            margin-top: 5px;
-        }
-
-        .editor-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding: 20px;
-        }
-
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 12px;
-            background-color: white;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-        }
-
-        .tool-btn {
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .tool-btn:hover {
-            background-color: #e9ecef;
-            border-color: #adb5bd;
-        }
-
-        .tool-btn.active {
-            background-color: #dbeafe;
-            border-color: #3b82f6;
-            color: #1e40af;
-        }
-
-        .drawing-tools {
-            display: flex;
-            gap: 8px;
-            margin-left: 10px;
-            padding-left: 10px;
-            border-left: 1px solid #dee2e6;
-        }
-
-        .shape-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-            background-color: white;
-        }
-
-        .shape-btn:hover {
-            background-color: #f8f9fa;
-        }
-
-        .shape-btn.active {
-            background-color: #e3f2fd;
-            border-color: #3b82f6;
-        }
-
-        .editor-area {
-            flex: 1;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .note-title {
-            width: 100%;
-            padding: 15px 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            border: none;
-            border-bottom: 1px solid #eee;
-            outline: none;
-        }
-
-        .note-title::placeholder {
-            color: #aaa;
-        }
-
-        .note-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            outline: none;
-            line-height: 1.5;
-            min-height: 300px;
-        }
-
-        .note-content table {
-            border-collapse: collapse;
-            margin: 10px 0;
-            width: 100%;
-        }
-
-        .note-content td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            min-width: 100px;
-            vertical-align: top;
-        }
-
-        .note-content .drawing-canvas {
-            border: 1px dashed #aaa;
-            margin: 10px 0;
-        }
-
-        .export-options {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            width: 350px;
-            display: none;
-        }
-
-        .export-options h3 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-            text-align: center;
-        }
-
-        .export-options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .export-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .export-option:hover {
-            background-color: #e9ecef;
-            transform: translateY(-3px);
-        }
-
-        .export-option i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .export-option.pdf i {
-            color: #e74c3c;
-        }
-
-        .export-option.txt i {
-            color: #3498db;
-        }
-
-        .export-option.docx i {
-            color: #2c3e50;
-        }
-
-        .export-option.xlsx i {
-            color: #27ae60;
-        }
-
-        .export-option span {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .drawing-mode {
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: none;
-            z-index: 100;
-        }
-
-        .drawing-mode canvas {
-            display: block;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .drawing-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #95a5a6;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .color-picker {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-left: 10px;
-        }
-
-        .color-option {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 1px solid #ddd;
-        }
-
-        .color-option.active {
-            border: 2px solid #333;
-            transform: scale(1.1);
-        }
-    </style>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --primary:#2b8aef; --muted:#7b7f87;
+      --accent:#16a085;
+      font-family: "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+    }
+    html,body{height:100%; margin:0; background:var(--bg); color:#111;}
+    .app{max-width:980px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column;}
+    /* Header */
+    header.top{display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:linear-gradient(90deg,#fff,#fff); box-shadow:0 1px 0 rgba(0,0,0,0.04);}
+    header.top h1{margin:0; font-size:18px}
+    /* Welcome screen */
+    .welcome{display:flex; align-items:center; justify-content:center; height:70vh; flex-direction:column; gap:16px}
+    .card{background:var(--card); padding:16px; border-radius:10px; box-shadow:0 6px 18px rgba(20,20,20,0.06); width:90%;}
+    .btn{background:var(--primary); color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer;}
+    .muted{color:var(--muted)}
+    /* Main layout */
+    .main{display:none; padding:12px; flex:1; gap:12px; flex-direction:column;}
+    .searchbar{display:flex; gap:8px; align-items:center;}
+    .searchbar input{flex:1; padding:10px; border-radius:10px; border:1px solid #e3e6ee; background:#fff}
+    .notes-grid{display:flex; gap:12px; flex-wrap:wrap; align-content:flex-start}
+    .note-card{background:var(--card); padding:12px; border-radius:10px; width:100%; box-shadow:0 6px 12px rgba(20,20,20,0.04); cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start}
+    @media(min-width:600px){ .note-card{width:calc(50% - 12px)} }
+    @media(min-width:900px){ .note-card{width:calc(33.333% - 12px)} }
+    .note-content{flex:1; margin-right:8px}
+    .note-actions{display:flex; gap:6px; flex-direction:column}
+    .icon-btn{width:38px;height:38px;border-radius:8px;border:none;background:#f2f4f7;display:grid;place-items:center;cursor:pointer}
+    /* Floating plus icon */
+    .fab{position:fixed; right:20px; bottom:20px; width:62px;height:62px;border-radius:50%; background:var(--accent); color:#fff; display:grid; place-items:center; font-size:28px; box-shadow:0 8px 20px rgba(0,0,0,0.18); border:none; cursor:pointer}
+    /* Editor screen */
+    .editor{display:none; padding:12px; gap:10px; flex-direction:column;}
+    .editor .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .editor .canvas-wrap{position:relative; background:#fff; border-radius:8px; padding:12px; min-height:320px; box-shadow:0 6px 12px rgba(0,0,0,0.04);}
+    .editor .editor-area{min-height:240px; outline:none}
+    /* SVG drawing overlay */
+    .svg-canvas{position:absolute; inset:12px; pointer-events:none}
+    .draw-mode .svg-canvas{pointer-events:auto}
+    .shape-btn.active{background:#eaf7f0}
+    /* sidebar actions when viewing */
+    .side-actions{display:flex; gap:8px}
+    /* small helpers */
+    .hidden{display:none}
+    .small{font-size:13px}
+    /* modal simple */
+    .modal{position:fixed; inset:0; display:grid; place-items:center; background:rgba(0,0,0,0.35); z-index:70}
+    .modal .modal-card{width:96%; max-width:560px; background:#fff; border-radius:10px; padding:14px}
+  </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <i class="fas fa-sticky-note"></i>
-            <h1>My Notepad</h1>
-        </div>
-        <div class="note-controls">
-            <button class="btn" id="newNoteBtn">
-                <i class="fas fa-plus"></i> New Note
-            </button>
-            <button class="btn btn-delete" id="deleteNoteBtn">
-                <i class="fas fa-trash"></i> Delete
-            </button>
-            <button class="btn btn-export" id="exportNoteBtn">
-                <i class="fas fa-share"></i> Share/Export
-            </button>
-        </div>
+  <div class="app">
+    <header class="top">
+      <h1>My Notepad</h1>
+      <div class="muted small">Offline • LocalStorage</div>
     </header>
 
-    <div class="container">
-        <div class="sidebar">
-            <div class="notes-list" id="notesList">
-                <!-- Notes will be loaded here -->
-            </div>
+    <!-- WELCOME SCREEN (shown once) -->
+    <div id="welcomeScreen" class="welcome">
+      <div class="card" style="max-width:640px; text-align:center;">
+        <h2>Welcome to My Notepad</h2>
+        <p class="muted">This welcome message will not appear again.</p>
+        <div style="margin-top:12px;">
+          <button id="startBtn" class="btn">Open App</button>
         </div>
-
-        <div class="editor-container">
-            <div class="toolbar">
-                <button class="tool-btn" id="tableBtn" title="Insert Table">
-                    <i class="fas fa-table"></i> Table
-                </button>
-                <div class="drawing-tools">
-                    <button class="shape-btn" id="lineBtn" title="Draw Line">
-                        <i class="fas fa-slash"></i>
-                    </button>
-                    <button class="shape-btn" id="rectangleBtn" title="Draw Rectangle">
-                        <i class="fas fa-square"></i>
-                    </button>
-                    <button class="shape-btn" id="circleBtn" title="Draw Circle">
-                        <i class="fas fa-circle"></i>
-                    </button>
-                    <button class="shape-btn" id="arrowBtn" title="Draw Arrow">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-                <div class="color-picker">
-                    <div class="color-option active" style="background-color: #000000;" data-color="#000000"></div>
-                    <div class="color-option" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
-                    <div class="color-option" style="background-color: #3498db;" data-color="#3498db"></div>
-                    <div class="color-option" style="background-color: #27ae60;" data-color="#27ae60"></div>
-                </div>
-            </div>
-
-            <div class="editor-area">
-                <input type="text" class="note-title" id="noteTitle" placeholder="Note Title">
-                <div class="note-content" id="noteContent" contenteditable="true" placeholder="Start typing your note here...">
-                    <!-- Note content will be here -->
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <!-- Export Options Modal -->
-    <div class="overlay" id="exportOverlay"></div>
-    <div class="export-options" id="exportOptions">
-        <h3>Export Note As</h3>
-        <div class="export-options-grid">
-            <div class="export-option pdf" data-format="pdf">
-                <i class="fas fa-file-pdf"></i>
-                <span>PDF</span>
-            </div>
-            <div class="export-option txt" data-format="txt">
-                <i class="fas fa-file-alt"></i>
-                <span>TXT</span>
-            </div>
-            <div class="export-option docx" data-format="docx">
-                <i class="fas fa-file-word"></i>
-                <span>Word</span>
-            </div>
-            <div class="export-option xlsx" data-format="xlsx">
-                <i class="fas fa-file-excel"></i>
-                <span>Excel</span>
-            </div>
+    <!-- MAIN SCREEN -->
+    <div id="mainScreen" class="main">
+      <div class="card" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="searchbar">
+          <input id="searchInput" placeholder="Search notes..." />
         </div>
+        <div id="notesList" class="notes-grid" style="min-height:240px; align-content:flex-start;">
+          <!-- note cards will be injected here -->
+        </div>
+      </div>
     </div>
 
-    <!-- Drawing Canvas -->
-    <div class="drawing-mode" id="drawingMode">
-        <canvas id="drawingCanvas" width="500" height="300"></canvas>
-        <div class="drawing-controls">
-            <button class="btn" id="saveDrawingBtn">
-                <i class="fas fa-check"></i> Insert
-            </button>
-            <button class="btn btn-delete" id="cancelDrawingBtn">
-                <i class="fas fa-times"></i> Cancel
-            </button>
+    <!-- VIEW / EDIT MODAL AS SCREENS -->
+    <div id="viewScreen" class="modal hidden" aria-hidden="true">
+      <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 id="viewTitle">Note</h3>
+          <div class="side-actions">
+            <button id="shareBtn" class="icon-btn" title="Share">⤴</button>
+            <button id="deleteBtn" class="icon-btn" title="Delete">🗑</button>
+            <button id="closeViewBtn" class="icon-btn">✕</button>
+          </div>
         </div>
+        <div id="viewContent" style="margin-top:12px; background:#f8f9fb; padding:12px; border-radius:8px; min-height:140px; overflow:auto"></div>
+        <div style="margin-top:10px; display:flex; gap:8px; justify-content:flex-end;">
+          <button id="editFromViewBtn" class="btn">Edit</button>
+        </div>
+      </div>
     </div>
 
-    <script>
-        // Application state
-        const state = {
-            notes: JSON.parse(localStorage.getItem('myNotepadNotes')) || [],
-            currentNoteId: null,
-            isDrawing: false,
-            drawingShape: null,
-            drawingColor: '#000000',
-            drawingStartX: 0,
-            drawingStartY: 0,
-            isDrawingMode: false
-        };
+    <!-- EDIT / NEW NOTE SCREEN -->
+    <div id="editorScreen" class="editor hidden">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input id="noteTitle" placeholder="Note title (optional)" style="padding:8px; border-radius:8px; border:1px solid #e6e9ef" />
+            <div class="small muted">— Edit note</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="insertTableBtn" class="icon-btn" title="Insert table">▦</button>
+            <button id="drawToggleBtn" class="icon-btn" title="Draw shape">✎</button>
+            <button id="saveNoteBtn" class="btn">Save</button>
+            <button id="closeEditorBtn" class="icon-btn">✕</button>
+          </div>
+        </div>
 
-        // DOM Elements
-        const notesList = document.getElementById('notesList');
-        const noteTitle = document.getElementById('noteTitle');
-        const noteContent = document.getElementById('noteContent');
-        const newNoteBtn = document.getElementById('newNoteBtn');
-        const deleteNoteBtn = document.getElementById('deleteNoteBtn');
-        const exportNoteBtn = document.getElementById('exportNoteBtn');
-        const exportOptions = document.getElementById('exportOptions');
-        const exportOverlay = document.getElementById('exportOverlay');
-        const tableBtn = document.getElementById('tableBtn');
-        const drawingCanvas = document.getElementById('drawingCanvas');
-        const drawingMode = document.getElementById('drawingMode');
-        const saveDrawingBtn = document.getElementById('saveDrawingBtn');
-        const cancelDrawingBtn = document.getElementById('cancelDrawingBtn');
-        const lineBtn = document.getElementById('lineBtn');
-        const rectangleBtn = document.getElementById('rectangleBtn');
-        const circleBtn = document.getElementById('circleBtn');
-        const arrowBtn = document.getElementById('arrowBtn');
-        const colorOptions = document.querySelectorAll('.color-option');
+        <div class="toolbar small" style="margin-top:10px">
+          <div class="muted">Tip: Type "1." or "১." or "١." then Enter for automatic numbering.</div>
+        </div>
 
-        // Initialize the app
-        function init() {
-            renderNotesList();
-            setupEventListeners();
-            
-            // If there are notes, load the first one
-            if (state.notes.length > 0) {
-                loadNote(state.notes[0].id);
-            } else {
-                createNewNote();
-            }
-            
-            // Setup auto numbering
-            setupAutoNumbering();
-        }
+        <div class="canvas-wrap" id="canvasWrap" style="margin-top:12px;">
+          <!-- Editable area -->
+          <div id="editorArea" class="editor-area" contenteditable="true" style="min-height:220px;"></div>
 
-        // Render notes list in sidebar
-        function renderNotesList() {
-            notesList.innerHTML = '';
-            
-            if (state.notes.length === 0) {
-                notesList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-sticky-note"></i>
-                        <h3>No notes yet</h3>
-                        <p>Create your first note to get started</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            state.notes.forEach(note => {
-                const noteElement = document.createElement('div');
-                noteElement.className = `note-item ${state.currentNoteId === note.id ? 'active' : ''}`;
-                noteElement.dataset.id = note.id;
-                
-                // Get preview text (first 50 chars without HTML)
-                const previewText = note.content.replace(/<[^>]*>/g, '').substring(0, 50);
-                const date = new Date(note.updatedAt).toLocaleDateString();
-                
-                noteElement.innerHTML = `
-                    <h3>${note.title || 'Untitled Note'}</h3>
-                    <p>${previewText || 'Empty note...'}</p>
-                    <div class="note-date">Updated: ${date}</div>
-                `;
-                
-                noteElement.addEventListener('click', () => loadNote(note.id));
-                notesList.appendChild(noteElement);
-            });
-        }
+          <!-- SVG overlay for drawing -->
+          <svg id="svgCanvas" class="svg-canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </div>
+    </div>
 
-        // Create a new note
-        function createNewNote() {
-            const newNote = {
-                id: Date.now().toString(),
-                title: 'Untitled Note',
-                content: '',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            
-            state.notes.unshift(newNote);
-            state.currentNoteId = newNote.id;
-            saveNotes();
-            renderNotesList();
-            
-            noteTitle.value = newNote.title;
-            noteContent.innerHTML = '';
-            
-            // Focus on title
-            setTimeout(() => noteTitle.focus(), 100);
-        }
+    <!-- Floating plus icon (no text) -->
+    <button id="fab" class="fab" title="New note">＋</button>
 
-        // Load a note by ID
-        function loadNote(noteId) {
-            const note = state.notes.find(n => n.id === noteId);
-            if (!note) return;
-            
-            state.currentNoteId = noteId;
-            noteTitle.value = note.title;
-            noteContent.innerHTML = note.content;
-            
-            renderNotesList();
-        }
+    <!-- SHARE OPTIONS MODAL -->
+    <div id="shareModal" class="modal hidden">
+      <div class="modal-card">
+        <h3>Share / Export Note</h3>
+        <p class="muted small">Choose a format. Layout, shapes and formatting will be preserved (PDF best preserves layout).</p>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button id="exportPdfBtn" class="btn">Export as .pdf</button>
+          <button id="exportTxtBtn" class="btn" style="background:#444">Export as .txt</button>
+          <button id="exportDocxBtn" class="btn" style="background:#6c5ce7">Export as .docx</button>
+          <button id="exportXlsxBtn" class="btn" style="background:#e17b3b">Export as .xlsx</button>
+        </div>
+        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+          <button id="closeShareModal" class="icon-btn">✕</button>
+        </div>
+      </div>
+    </div>
 
-        // Save the current note
-        function saveCurrentNote() {
-            if (!state.currentNoteId) return;
-            
-            const noteIndex = state.notes.findIndex(n => n.id === state.currentNoteId);
-            if (noteIndex === -1) return;
-            
-            state.notes[noteIndex].title = noteTitle.value || 'Untitled Note';
-            state.notes[noteIndex].content = noteContent.innerHTML;
-            state.notes[noteIndex].updatedAt = new Date().toISOString();
-            
-            saveNotes();
-            renderNotesList();
-        }
+  </div>
 
-        // Delete the current note
-        function deleteCurrentNote() {
-            if (!state.currentNoteId) return;
-            
-            const confirmDelete = confirm('Are you sure you want to delete this note?');
-            if (!confirmDelete) return;
-            
-            state.notes = state.notes.filter(note => note.id !== state.currentNoteId);
-            saveNotes();
-            
-            // Load another note or create a new one
-            if (state.notes.length > 0) {
-                loadNote(state.notes[0].id);
-            } else {
-                createNewNote();
-            }
-            
-            renderNotesList();
-        }
+<script>
+/* ============================
+   Simple My Notepad Web App
+   - LocalStorage based notes
+   - Welcome screen shown once
+   - Notes list with search
+   - Floating plus icon opens editor (new note)
+   - View note modal (with delete/share)
+   - Editor supports:
+       * Insert table (columns+rows like Word)
+       * Simple SVG shape drawing (lines, rect, circle by freehand tools)
+       * Auto-numbering for English, Bengali, Arabic numerals
+   - Export: PDF (.pdf), TXT (.txt), DOCX (.docx), XLSX (.xlsx)
+   ============================*/
 
-        // Save notes to localStorage
-        function saveNotes() {
-            localStorage.setItem('myNotepadNotes', JSON.stringify(state.notes));
-        }
+/* ---------- Utilities ---------- */
+const uid = () => 'n_' + Math.random().toString(36).slice(2,10);
+const LS_KEY = 'my_notepad_notes_v1';
+const welcomeKey = 'my_notepad_welcomed_v1';
 
-        // Setup auto numbering
-        function setupAutoNumbering() {
-            noteContent.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    const selection = window.getSelection();
-                    const node = selection.anchorNode;
-                    
-                    if (node && node.nodeType === Node.TEXT_NODE) {
-                        const text = node.textContent.substring(0, selection.anchorOffset);
-                        const match = text.match(/(\d+|[১২৩৪৫৬৭৮৯০]+|[١٢٣٤٥٦٧٨٩٠]+)\.\s*$/);
-                        
-                        if (match) {
-                            e.preventDefault();
-                            
-                            // Get the number
-                            const numStr = match[1];
-                            let nextNum;
-                            
-                            // Check if it's Bengali numbers
-                            if (/[১২৩৪৫৬৭৮৯০]/.test(numStr)) {
-                                const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-                                const num = parseInt(numStr.split('').map(ch => {
-                                    return bengaliNumbers.indexOf(ch);
-                                }).join(''));
-                                nextNum = (num + 1).toString().split('').map(d => bengaliNumbers[parseInt(d)]).join('');
-                            }
-                            // Check if it's Arabic numbers
-                            else if (/[١٢٣٤٥٦٧٨٩٠]/.test(numStr)) {
-                                const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-                                const num = parseInt(numStr.split('').map(ch => {
-                                    return arabicNumbers.indexOf(ch);
-                                }).join(''));
-                                nextNum = (num + 1).toString().split('').map(d => arabicNumbers[parseInt(d)]).join('');
-                            }
-                            // Default to English numbers
-                            else {
-                                nextNum = (parseInt(numStr) + 1).toString();
-                            }
-                            
-                            // Insert the next number
-                            const range = selection.getRangeAt(0);
-                            const p = document.createElement('p');
-                            p.innerHTML = `${nextNum}. `;
-                            
-                            range.deleteContents();
-                            range.insertNode(p);
-                            
-                            // Move cursor after the number
-                            const newRange = document.createRange();
-                            newRange.setStartAfter(p);
-                            newRange.collapse(true);
-                            selection.removeAllRanges();
-                            selection.addRange(newRange);
-                        }
-                    }
-                }
-            });
-        }
+function loadNotes(){ try{ return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch(e){return []} }
+function saveNotes(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)) }
 
-        // Setup drawing functionality
-        function setupDrawing() {
-            const ctx = drawingCanvas.getContext('2d');
-            let isDrawing = false;
-            let startX, startY;
-            
-            // Get mouse position relative to canvas
-            function getMousePos(canvas, evt) {
-                const rect = canvas.getBoundingClientRect();
-                return {
-                    x: evt.clientX - rect.left,
-                    y: evt.clientY - rect.top
-                };
-            }
-            
-            // Start drawing
-            drawingCanvas.addEventListener('mousedown', (e) => {
-                isDrawing = true;
-                const pos = getMousePos(drawingCanvas, e);
-                startX = pos.x;
-                startY = pos.y;
-                state.drawingStartX = startX;
-                state.drawingStartY = startY;
-            });
-            
-            // Draw on mouse move
-            drawingCanvas.addEventListener('mousemove', (e) => {
-                if (!isDrawing || !state.drawingShape) return;
-                
-                const pos = getMousePos(drawingCanvas, e);
-                const currentX = pos.x;
-                const currentY = pos.y;
-                
-                // Clear canvas
-                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-                
-                // Draw the shape
-                ctx.strokeStyle = state.drawingColor;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                
-                switch(state.drawingShape) {
-                    case 'line':
-                        ctx.moveTo(startX, startY);
-                        ctx.lineTo(currentX, currentY);
-                        break;
-                    case 'rectangle':
-                        const rectWidth = currentX - startX;
-                        const rectHeight = currentY - startY;
-                        ctx.rect(startX, startY, rectWidth, rectHeight);
-                        break;
-                    case 'circle':
-                        const radius = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));
-                        ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-                        break;
-                    case 'arrow':
-                        drawArrow(ctx, startX, startY, currentX, currentY);
-                        break;
-                }
-                
-                ctx.stroke();
-            });
-            
-            // Stop drawing
-            drawingCanvas.addEventListener('mouseup', () => {
-                isDrawing = false;
-            });
-            
-            // Function to draw an arrow
-            function drawArrow(ctx, fromX, fromY, toX, toY) {
-                const headlen = 15;
-                const angle = Math.atan2(toY - fromY, toX - fromX);
-                
-                ctx.moveTo(fromX, fromY);
-                ctx.lineTo(toX, toY);
-                ctx.moveTo(toX, toY);
-                ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI/6), toY - headlen * Math.sin(angle - Math.PI/6));
-                ctx.moveTo(toX, toY);
-                ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI/6), toY - headlen * Math.sin(angle + Math.PI/6));
-            }
-            
-            // Save drawing to note
-            saveDrawingBtn.addEventListener('click', () => {
-                const dataURL = drawingCanvas.toDataURL('image/png');
-                const img = document.createElement('img');
-                img.src = dataURL;
-                img.className = 'drawing-canvas';
-                img.style.maxWidth = '100%';
-                
-                // Insert into note
-                noteContent.focus();
-                document.execCommand('insertHTML', false, img.outerHTML);
-                
-                // Close drawing mode
-                drawingMode.style.display = 'none';
-                exportOverlay.style.display = 'none';
-                state.drawingShape = null;
-                
-                // Clear canvas
-                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-            });
-            
-            // Cancel drawing
-            cancelDrawingBtn.addEventListener('click', () => {
-                drawingMode.style.display = 'none';
-                exportOverlay.style.display = 'none';
-                state.drawingShape = null;
-                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-            });
-        }
+/* ---------- Initial UI elems ---------- */
+const welcomeScreen = document.getElementById('welcomeScreen');
+const startBtn = document.getElementById('startBtn');
+const mainScreen = document.getElementById('mainScreen');
+const notesList = document.getElementById('notesList');
+const searchInput = document.getElementById('searchInput');
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Note title and content changes
-            noteTitle.addEventListener('input', saveCurrentNote);
-            noteContent.addEventListener('input', saveCurrentNote);
-            
-            // Buttons
-            newNoteBtn.addEventListener('click', createNewNote);
-            deleteNoteBtn.addEventListener('click', deleteCurrentNote);
-            exportNoteBtn.addEventListener('click', () => {
-                exportOptions.style.display = 'block';
-                exportOverlay.style.display = 'block';
-            });
-            
-            // Export overlay
-            exportOverlay.addEventListener('click', () => {
-                exportOptions.style.display = 'none';
-                exportOverlay.style.display = 'none';
-            });
-            
-            // Export options
-            document.querySelectorAll('.export-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const format = this.dataset.format;
-                    exportNote(format);
-                    
-                    // Close export modal
-                    exportOptions.style.display = 'none';
-                    exportOverlay.style.display = 'none';
-                });
-            });
-            
-            // Table button
-            tableBtn.addEventListener('click', () => {
-                // Create a simple table (2x2)
-                const tableHTML = `
-                    <table>
-                        <tr>
-                            <td contenteditable="true">Cell 1</td>
-                            <td contenteditable="true">Cell 2</td>
-                        </tr>
-                        <tr>
-                            <td contenteditable="true">Cell 3</td>
-                            <td contenteditable="true">Cell 4</td>
-                        </tr>
-                    </table>
-                `;
-                
-                noteContent.focus();
-                document.execCommand('insertHTML', false, tableHTML);
-                saveCurrentNote();
-            });
-            
-            // Drawing shape buttons
-            lineBtn.addEventListener('click', () => startDrawing('line'));
-            rectangleBtn.addEventListener('click', () => startDrawing('rectangle'));
-            circleBtn.addEventListener('click', () => startDrawing('circle'));
-            arrowBtn.addEventListener('click', () => startDrawing('arrow'));
-            
-            // Color picker
-            colorOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    colorOptions.forEach(opt => opt.classList.remove('active'));
-                    this.classList.add('active');
-                    state.drawingColor = this.dataset.color;
-                });
-            });
-            
-            // Setup drawing functionality
-            setupDrawing();
-        }
+const fab = document.getElementById('fab');
+const editorScreen = document.getElementById('editorScreen');
+const editorArea = document.getElementById('editorArea');
+const noteTitle = document.getElementById('noteTitle');
+const saveNoteBtn = document.getElementById('saveNoteBtn');
+const closeEditorBtn = document.getElementById('closeEditorBtn');
+const insertTableBtn = document.getElementById('insertTableBtn');
+const drawToggleBtn = document.getElementById('drawToggleBtn');
 
-        // Start drawing mode
-        function startDrawing(shape) {
-            state.drawingShape = shape;
-            drawingMode.style.display = 'block';
-            exportOverlay.style.display = 'block';
-            
-            // Position the drawing modal
-            const rect = noteContent.getBoundingClientRect();
-            drawingMode.style.top = `${rect.top + 50}px`;
-            drawingMode.style.left = `${rect.left + 50}px`;
-        }
+const viewScreen = document.getElementById('viewScreen');
+const viewContent = document.getElementById('viewContent');
+const viewTitle = document.getElementById('viewTitle');
+const closeViewBtn = document.getElementById('closeViewBtn');
+const deleteBtn = document.getElementById('deleteBtn');
+const shareBtn = document.getElementById('shareBtn');
+const editFromViewBtn = document.getElementById('editFromViewBtn');
 
-        // Export note functionality (simulated)
-        function exportNote(format) {
-            if (!state.currentNoteId) return;
-            
-            const note = state.notes.find(n => n.id === state.currentNoteId);
-            if (!note) return;
-            
-            let message = '';
-            let fileName = `${note.title.replace(/\s+/g, '_')}.${format}`;
-            
-            switch(format) {
-                case 'pdf':
-                    message = `Note exported as PDF: ${fileName}\n(Note: In a real implementation, this would generate a PDF with formatting preserved)`;
-                    break;
-                case 'txt':
-                    // Extract text content from HTML
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = note.content;
-                    const textContent = tempDiv.textContent || tempDiv.innerText || '';
-                    
-                    // Create download link for TXT
-                    const txtBlob = new Blob([`${note.title}\n\n${textContent}`], {type: 'text/plain'});
-                    const txtUrl = URL.createObjectURL(txtBlob);
-                    const txtLink = document.createElement('a');
-                    txtLink.href = txtUrl;
-                    txtLink.download = fileName;
-                    document.body.appendChild(txtLink);
-                    txtLink.click();
-                    document.body.removeChild(txtLink);
-                    URL.revokeObjectURL(txtUrl);
-                    
-                    message = `Note exported as TXT: ${fileName}`;
-                    break;
-                case 'docx':
-                    message = `Note exported as Microsoft Word: ${fileName}\n(Note: In a real implementation, this would generate a .docx file)`;
-                    break;
-                case 'xlsx':
-                    message = `Note exported as Microsoft Excel: ${fileName}\n(Note: In a real implementation, this would generate a .xlsx file)`;
-                    break;
-            }
-            
-            if (message) {
-                alert(message);
-            }
-        }
+const shareModal = document.getElementById('shareModal');
+const exportPdfBtn = document.getElementById('exportPdfBtn');
+const exportTxtBtn = document.getElementById('exportTxtBtn');
+const exportDocxBtn = document.getElementById('exportDocxBtn');
+const exportXlsxBtn = document.getElementById('exportXlsxBtn');
+const closeShareModal = document.getElementById('closeShareModal');
 
-        // Initialize the application
-        window.addEventListener('DOMContentLoaded', init);
-    </script>
+const svgCanvas = document.getElementById('svgCanvas');
+const canvasWrap = document.getElementById('canvasWrap');
+
+/* ---------- App state ---------- */
+let notes = loadNotes();
+let currentNoteId = null;
+let drawMode = false;
+let drawing = false;
+let currentPath = null;
+
+/* ---------- Welcome logic ---------- */
+function showWelcomeIfNeeded(){
+  const seen = localStorage.getItem(welcomeKey);
+  if(seen){ welcomeScreen.style.display='none'; mainScreen.style.display='flex'; renderNotes(); }
+  else{ welcomeScreen.style.display='flex'; mainScreen.style.display='none'; }
+}
+startBtn.addEventListener('click', ()=>{
+  localStorage.setItem(welcomeKey, '1');
+  welcomeScreen.style.display='none';
+  mainScreen.style.display='flex';
+  renderNotes();
+});
+
+/* ---------- Notes list rendering ---------- */
+function renderNotes(filter=''){
+  notesList.innerHTML='';
+  const list = notes.filter(n=>{
+    if(!filter) return true;
+    const t = (n.title||'') + ' ' + (n.plainText||'');
+    return t.toLowerCase().includes(filter.toLowerCase());
+  });
+  if(list.length===0){
+    notesList.innerHTML = `<div class="muted" style="padding:30px;width:100%;text-align:center">No notes yet</div>`;
+    return;
+  }
+  for(const note of list){
+    const card = document.createElement('div');
+    card.className = 'note-card';
+    card.dataset.id = note.id;
+    const content = document.createElement('div'); content.className='note-content';
+    content.innerHTML = `<strong>${escapeHtml(note.title||'Untitled')}</strong>
+      <div class="muted small" style="margin-top:6px">${escapeHtml( (note.plainText||'').slice(0,120) )}</div>`;
+    const actions = document.createElement('div'); actions.className='note-actions';
+    const openBtn = document.createElement('button'); openBtn.className='icon-btn'; openBtn.textContent='🔍';
+    openBtn.title='Open';
+    openBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openNote(note.id); });
+    const delBtn = document.createElement('button'); delBtn.className='icon-btn'; delBtn.textContent='🗑';
+    delBtn.title='Delete'; delBtn.addEventListener('click', (e)=>{ e.stopPropagation(); deleteNote(note.id); });
+    actions.appendChild(openBtn); actions.appendChild(delBtn);
+    card.appendChild(content); card.appendChild(actions);
+    card.addEventListener('click', ()=> openNote(note.id));
+    notesList.appendChild(card);
+  }
+}
+
+searchInput.addEventListener('input', ()=> renderNotes(searchInput.value));
+
+/* ---------- Fab (new note) ---------- */
+fab.addEventListener('click', ()=> openEditorForNew());
+
+/* ---------- Editor logic ---------- */
+function openEditorForNew(){
+  currentNoteId = null;
+  noteTitle.value = '';
+  editorArea.innerHTML = '<p><br></p>';
+  svgCanvas.innerHTML = '';
+  editorScreen.classList.remove('hidden');
+  editorScreen.style.display='flex';
+  viewScreen.classList.add('hidden');
+  mainScreen.style.display='none';
+  editorArea.focus();
+  drawMode = false; drawToggleBtn.classList.remove('active'); canvasWrap.classList.remove('draw-mode');
+}
+function openEditorForEdit(noteId){
+  const note = notes.find(n=>n.id===noteId); if(!note) return;
+  currentNoteId = note.id;
+  noteTitle.value = note.title || '';
+  editorArea.innerHTML = note.content || '<p><br></p>';
+  try{ svgCanvas.innerHTML = note.svg || ''; }catch(e){ svgCanvas.innerHTML='';}
+  editorScreen.classList.remove('hidden'); editorScreen.style.display='flex';
+  mainScreen.style.display='none'; viewScreen.classList.add('hidden');
+  editorArea.focus();
+}
+
+/* Save note */
+saveNoteBtn.addEventListener('click', ()=>{
+  const title = noteTitle.value.trim();
+  const content = editorArea.innerHTML;
+  const plain = editorArea.innerText || editorArea.textContent || '';
+  const svg = svgCanvas.innerHTML || '';
+  if(currentNoteId){
+    const idx = notes.findIndex(n=>n.id===currentNoteId);
+    if(idx>=0){
+      notes[idx].title = title;
+      notes[idx].content = content;
+      notes[idx].plainText = plain;
+      notes[idx].svg = svg;
+    }
+  } else {
+    const n = { id: uid(), title, content, plainText: plain, svg };
+    notes.unshift(n);
+    currentNoteId = n.id;
+  }
+  saveNotes(notes);
+  editorScreen.classList.add('hidden'); editorScreen.style.display='none';
+  mainScreen.style.display='flex';
+  renderNotes();
+});
+
+/* Close editor */
+closeEditorBtn.addEventListener('click', ()=>{
+  editorScreen.classList.add('hidden'); editorScreen.style.display='none';
+  mainScreen.style.display='flex';
+});
+
+/* ---------- View note ---------- */
+function openNote(noteId){
+  const note = notes.find(n=>n.id===noteId);
+  if(!note) return;
+  currentNoteId = note.id;
+  viewTitle.textContent = note.title || 'Untitled';
+  // Combine content HTML + svg overlay for view
+  viewContent.innerHTML = note.content || '';
+  // Insert svg overlay as an inline element so shapes show
+  if(note.svg){
+    const wrapper = document.createElement('div'); wrapper.style.position='relative';
+    wrapper.innerHTML = note.content + note.svg;
+    viewContent.innerHTML = wrapper.innerHTML;
+  }
+  viewScreen.classList.remove('hidden'); viewScreen.style.display='grid';
+  mainScreen.style.display='none';
+}
+closeViewBtn.addEventListener('click', ()=>{
+  viewScreen.classList.add('hidden'); viewScreen.style.display='none';
+  mainScreen.style.display='flex';
+});
+editFromViewBtn.addEventListener('click', ()=>{
+  openEditorForEdit(currentNoteId);
+});
+
+/* Delete */
+function deleteNote(id){
+  if(!confirm('Confirm delete this note?')) return;
+  notes = notes.filter(n=>n.id!==id);
+  saveNotes(notes);
+  renderNotes();
+  viewScreen.classList.add('hidden'); mainScreen.style.display='flex';
+}
+deleteBtn.addEventListener('click', ()=> deleteNote(currentNoteId));
+
+/* ---------- Insert Table (Column+Row) ---------- */
+insertTableBtn.addEventListener('click', ()=>{
+  const cols = prompt('Number of columns', '2'); if(!cols) return;
+  const rows = prompt('Number of rows', '2'); if(!rows) return;
+  const c = parseInt(cols)||2, r=parseInt(rows)||2;
+  const table = document.createElement('table');
+  table.style.width='100%'; table.style.borderCollapse='collapse';
+  table.style.margin='6px 0';
+  table.style.border='1px solid #e6e9ef';
+  for(let i=0;i<r;i++){
+    const tr = document.createElement('tr');
+    for(let j=0;j<c;j++){
+      const td = document.createElement('td');
+      td.contentEditable = "true";
+      td.style.border='1px solid #e6e9ef';
+      td.style.padding='8px';
+      td.innerHTML = '<div><br></div>';
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  // insert at caret
+  insertNodeAtCaret(table);
+  editorArea.focus();
+});
+
+/* helper: insert DOM node at caret inside contenteditable */
+function insertNodeAtCaret(node){
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount===0){ editorArea.appendChild(node); return; }
+  const range = sel.getRangeAt(0);
+  range.deleteContents();
+  range.insertNode(node);
+  // place caret after node
+  range.setStartAfter(node); range.collapse(true);
+  sel.removeAllRanges(); sel.addRange(range);
+}
+
+/* ---------- Simple SVG drawing (freehand) ---------- */
+drawToggleBtn.addEventListener('click', ()=>{
+  drawMode = !drawMode;
+  if(drawMode){ drawToggleBtn.classList.add('active'); canvasWrap.classList.add('draw-mode'); svgCanvas.innerHTML = svgCanvas.innerHTML || ''; }
+  else { drawToggleBtn.classList.remove('active'); canvasWrap.classList.remove('draw-mode'); }
+});
+svgCanvas.setAttribute('width','100%'); svgCanvas.setAttribute('height','100%');
+svgCanvas.style.width='calc(100% - 24px)'; svgCanvas.style.height='calc(100% - 24px)';
+
+/* coordinates mapping */
+function getRelativePos(evt){
+  const rect = svgCanvas.getBoundingClientRect();
+  const x = evt.clientX - rect.left;
+  const y = evt.clientY - rect.top;
+  return {x, y};
+}
+svgCanvas.addEventListener('pointerdown', (e)=>{
+  if(!drawMode) return;
+  drawing = true;
+  const p = getRelativePos(e);
+  currentPath = document.createElementNS('http://www.w3.org/2000/svg','path');
+  currentPath.setAttribute('d', `M ${p.x} ${p.y}`);
+  currentPath.setAttribute('stroke','#ff4d4f');
+  currentPath.setAttribute('stroke-width','2');
+  currentPath.setAttribute('fill','none');
+  currentPath.setAttribute('stroke-linecap','round');
+  svgCanvas.appendChild(currentPath);
+});
+svgCanvas.addEventListener('pointermove', (e)=>{
+  if(!drawing || !currentPath) return;
+  const p = getRelativePos(e);
+  const d = currentPath.getAttribute('d');
+  currentPath.setAttribute('d', d + ` L ${p.x} ${p.y}`);
+});
+window.addEventListener('pointerup', ()=>{
+  if(drawing){ drawing=false; currentPath=null; }
+});
+
+/* ---------- Auto-numbering logic ----------
+   When Enter is pressed inside editorArea, check previous line text start for numbering patterns.
+   Support: Latin digits (\d+), Bengali digits [০-৯], Arabic-Indic digits [٠-٩].
+   We'll detect unicode digits and increment keeping same script.
+*/
+editorArea.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    // get caret container
+    const sel = window.getSelection();
+    if(!sel.rangeCount) return;
+    const range = sel.getRangeAt(0).cloneRange();
+    // get text node before caret on same line
+    range.setStart(editorArea, 0);
+    const fullBefore = range.toString();
+    // extract last line before caret
+    const lines = fullBefore.split(/\r?\n/);
+    const lastLine = lines[lines.length-1].trim();
+    const mLatin = lastLine.match(/^(\d+)\.\s*$/);
+    const mBeng = lastLine.match(/^([০-৯]+)\.\s*$/);
+    const mArab = lastLine.match(/^([٠-٩]+)\.\s*$/);
+    if(mLatin){
+      e.preventDefault();
+      const num = parseInt(mLatin[1]) + 1;
+      insertTextAtCaret(num + '.\u00A0'); // add non-breaking space
+    } else if(mBeng){
+      e.preventDefault();
+      const val = bengToNumber(mBeng[1]) + 1;
+      insertTextAtCaret(numberToBeng(val) + '.\u00A0');
+    } else if(mArab){
+      e.preventDefault();
+      const val = arabToNumber(mArab[1]) + 1;
+      insertTextAtCaret(numberToArab(val) + '.\u00A0');
+    }
+  }
+});
+
+/* helpers: insert plain text at caret */
+function insertTextAtCaret(text){
+  const sel = window.getSelection();
+  if(!sel.rangeCount){ editorArea.appendChild(document.createTextNode(text)); return; }
+  const range = sel.getRangeAt(0);
+  range.deleteContents();
+  const textNode = document.createTextNode(text);
+  range.insertNode(textNode);
+  range.setStartAfter(textNode);
+  range.collapse(true);
+  sel.removeAllRanges(); sel.addRange(range);
+}
+
+/* numeral conversions */
+const bengDigits = '০১২৩৪৫৬৭৮৯';
+const arabDigits = '٠١٢٣٤٥٦٧٨٩';
+function bengToNumber(str){ let out=0; for(let ch of str){ out = out*10 + bengDigits.indexOf(ch); } return out; }
+function numberToBeng(n){ return String(n).split('').map(d=>bengDigits[+d]).join(''); }
+function arabToNumber(str){ let out=0; for(let ch of str){ out = out*10 + arabDigits.indexOf(ch); } return out; }
+function numberToArab(n){ return String(n).split('').map(d=>arabDigits[+d]).join(''); }
+
+/* ---------- Export / Share ---------- */
+shareBtn.addEventListener('click', ()=> {
+  shareModal.classList.remove('hidden'); shareModal.style.display='grid';
+});
+closeShareModal.addEventListener('click', ()=> { shareModal.classList.add('hidden'); shareModal.style.display='none'; });
+
+/* Export as TXT */
+exportTxtBtn.addEventListener('click', ()=>{
+  const note = notes.find(n=>n.id===currentNoteId);
+  if(!note) return alert('No note selected');
+  const text = (note.plainText || note.content || '');
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  saveAs(blob, ((note.title||'note') + '.txt').replace(/\s+/g,'_'));
+});
+
+/* Export as PDF (use html2canvas + jspdf) */
+exportPdfBtn.addEventListener('click', async ()=>{
+  const note = notes.find(n=>n.id===currentNoteId);
+  if(!note) return alert('No note selected');
+  // create a temporary element that combines content + svg for rendering
+  const el = document.createElement('div'); el.style.width='800px'; el.style.padding='20px'; el.style.background='#fff';
+  el.innerHTML = `<h2 style="font-family:inherit">${escapeHtml(note.title||'')}</h2>` + (note.content || '') + (note.svg || '');
+  document.body.appendChild(el);
+  try{
+    const canvas = await html2canvas(el, {scale:2, useCORS:true, backgroundColor:'#ffffff'});
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p','pt',[canvas.width, canvas.height]);
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save((note.title||'note') + '.pdf');
+  } catch(err){ alert('PDF export failed: '+err); }
+  document.body.removeChild(el);
+});
+
+/* Export as DOCX using docx.js (basic conversion: paragraphs and tables) */
+exportDocxBtn.addEventListener('click', async ()=>{
+  const note = notes.find(n=>n.id===currentNoteId);
+  if(!note) return alert('No note selected');
+  // very simple HTML to docx conversion: parse tables and paragraphs
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(note.content || '','text/html');
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell } = window.docx;
+  const docx = new Document();
+  const children = [];
+  Array.from(doc.body.childNodes).forEach(node=>{
+    if(node.nodeName === 'TABLE'){
+      const rows = Array.from(node.querySelectorAll('tr')).map(tr=>{
+        const cells = Array.from(tr.querySelectorAll('td')).map(td=>{
+          return new TableCell({ children: [ new Paragraph( td.textContent || '' ) ] });
+        });
+        return new TableRow({ children: cells });
+      });
+      children.push(new Table({ rows }));
+    } else {
+      children.push(new Paragraph(node.textContent || ''));
+    }
+  });
+  docx.addSection({ children });
+  const packer = new Packer();
+  const blob = await packer.toBlob(docx);
+  saveAs(blob, ((note.title||'note') + '.docx').replace(/\s+/g,'_'));
+});
+
+/* Export as XLSX using SheetJS: put content into one sheet */
+exportXlsxBtn.addEventListener('click', ()=>{
+  const note = notes.find(n=>n.id===currentNoteId);
+  if(!note) return alert('No note selected');
+  const ws = XLSX.utils.aoa_to_sheet([[note.title||'Title'], [], [ (note.plainText || '') ]]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Note');
+  const wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+  saveAs(new Blob([wbout], {type:'application/octet-stream'}), ((note.title||'note') + '.xlsx').replace(/\s+/g,'_'));
+});
+
+/* ---------- Helpers ---------- */
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* ---------- Simple load on start ---------- */
+showWelcomeIfNeeded();
+
+/* On load render in case welcome was seen earlier */
+if(localStorage.getItem(welcomeKey)) renderNotes();
+
+/* ---------- Open note via click handler (note card) is above; but we need global click for opening new editor from viewShareButton etc. ---------- */
+
+/* ---------- When viewing, allow share modal actions to operate on currentNoteId ---------- */
+
+/* ---------- Auto-save current editor content to localStorage on leaving page? (Not required) ---------- */
+
+/* ---------- Utility: When closing modals, hide them properly ---------- */
+[closeShareModal, closeViewBtn].forEach(btn=>{
+  btn && btn.addEventListener('click', ()=>{
+    shareModal.classList.add('hidden'); viewScreen.classList.add('hidden');
+    shareModal.style.display='none'; viewScreen.style.display='none';
+  });
+});
+
+/* ---------- Make sure Save note also stores svg overlay into current note when saving from editor ---------- */
+/* (already included in save logic by saving svgCanvas.innerHTML) */
+
+/* ---------- Extra: clicking outside modal closes share modal (small UX) ---------- */
+shareModal.addEventListener('click', (e)=>{ if(e.target === shareModal){ shareModal.classList.add('hidden'); shareModal.style.display='none'; }});
+viewScreen.addEventListener('click', (e)=>{ if(e.target === viewScreen){ viewScreen.classList.add('hidden'); viewScreen.style.display='none'; mainScreen.style.display='flex'; }});
+
+/* ---------- When navigating back from editor, ensure main screen visible ---------- */
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) renderNotes(); });
+
+/* ---------- Minimal: persist notes when user closes page (already saved on Save button). ---------- */
+
+</script>
 </body>
 </html>
