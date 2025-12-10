@@ -1,220 +1,984 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechoSoft - আপনার ডিজিটাল সমাধান পার্টনার</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>My Notepad</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .note-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-export {
+            background-color: #27ae60;
+        }
+
+        .btn-export:hover {
+            background-color: #219653;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #ecf0f1;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #dcdde1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .note-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border-left: 4px solid #3498db;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .note-item:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .note-item.active {
+            background-color: #e3f2fd;
+            border-left-color: #1a73e8;
+        }
+
+        .note-item h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-item p {
+            font-size: 0.85rem;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-date {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+        }
+
+        .tool-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .tool-btn:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .tool-btn.active {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .drawing-tools {
+            display: flex;
+            gap: 8px;
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 1px solid #dee2e6;
+        }
+
+        .shape-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .shape-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .shape-btn.active {
+            background-color: #e3f2fd;
+            border-color: #3b82f6;
+        }
+
+        .editor-area {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .note-title {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border: none;
+            border-bottom: 1px solid #eee;
+            outline: none;
+        }
+
+        .note-title::placeholder {
+            color: #aaa;
+        }
+
+        .note-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            outline: none;
+            line-height: 1.5;
+            min-height: 300px;
+        }
+
+        .note-content table {
+            border-collapse: collapse;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .note-content td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            min-width: 100px;
+            vertical-align: top;
+        }
+
+        .note-content .drawing-canvas {
+            border: 1px dashed #aaa;
+            margin: 10px 0;
+        }
+
+        .export-options {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 350px;
+            display: none;
+        }
+
+        .export-options h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .export-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .export-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-option:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .export-option i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .export-option.pdf i {
+            color: #e74c3c;
+        }
+
+        .export-option.txt i {
+            color: #3498db;
+        }
+
+        .export-option.docx i {
+            color: #2c3e50;
+        }
+
+        .export-option.xlsx i {
+            color: #27ae60;
+        }
+
+        .export-option span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .drawing-mode {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 100;
+        }
+
+        .drawing-mode canvas {
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .drawing-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #95a5a6;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 10px;
+        }
+
+        .color-option {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        .color-option.active {
+            border: 2px solid #333;
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <h2>TechoSoft</h2>
-            </div>
-            <div class="nav-menu">
-                <a href="#home" class="nav-link">হোম</a>
-                <a href="#services" class="nav-link">সেবাসমূহ</a>
-                <a href="#about" class="nav-link">আমাদের সম্পর্কে</a>
-                <a href="#portfolio" class="nav-link">পোর্টফোলিও</a>
-                <a href="#contact" class="nav-link">যোগাযোগ</a>
-            </div>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+    <header>
+        <div class="logo">
+            <i class="fas fa-sticky-note"></i>
+            <h1>My Notepad</h1>
+        </div>
+        <div class="note-controls">
+            <button class="btn" id="newNoteBtn">
+                <i class="fas fa-plus"></i> New Note
+            </button>
+            <button class="btn btn-delete" id="deleteNoteBtn">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+            <button class="btn btn-export" id="exportNoteBtn">
+                <i class="fas fa-share"></i> Share/Export
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="notes-list" id="notesList">
+                <!-- Notes will be loaded here -->
             </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1>ডিজিটাল বিপ্লবে <span>আপনার বিশ্বস্ত পার্টনার</span></h1>
-                <p>আমরা প্রদান করি আধুনিক ওয়েব সলিউশন, মোবাইল অ্যাপ ডেভেলপমেন্ট এবং ডিজিটাল মার্কেটিং সেবা</p>
-                <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-primary">নিখুত估价 পান</a>
-                    <a href="#portfolio" class="btn btn-secondary">আমাদের কাজ দেখুন</a>
+        <div class="editor-container">
+            <div class="toolbar">
+                <button class="tool-btn" id="tableBtn" title="Insert Table">
+                    <i class="fas fa-table"></i> Table
+                </button>
+                <div class="drawing-tools">
+                    <button class="shape-btn" id="lineBtn" title="Draw Line">
+                        <i class="fas fa-slash"></i>
+                    </button>
+                    <button class="shape-btn" id="rectangleBtn" title="Draw Rectangle">
+                        <i class="fas fa-square"></i>
+                    </button>
+                    <button class="shape-btn" id="circleBtn" title="Draw Circle">
+                        <i class="fas fa-circle"></i>
+                    </button>
+                    <button class="shape-btn" id="arrowBtn" title="Draw Arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="color-picker">
+                    <div class="color-option active" style="background-color: #000000;" data-color="#000000"></div>
+                    <div class="color-option" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
+                    <div class="color-option" style="background-color: #3498db;" data-color="#3498db"></div>
+                    <div class="color-option" style="background-color: #27ae60;" data-color="#27ae60"></div>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1556655848-f3a7046a8c2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="TechoSoft Hero">
-            </div>
-        </div>
-    </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <h2 class="section-title">আমাদের সেবাসমূহ</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-code"></i>
-                    <h3>ওয়েব ডেভেলপমেন্ট</h3>
-                    <p>আধুনিক ও রেস্পন্সিভ ওয়েবসাইট ডেভেলপমেন্ট</p>
-                    <ul>
-                        <li>ই-কমার্স সাইট</li>
-                        <li>ক cooperateওয়েবসাইট</li>
-                        <li>ল্যান্ডিং পেজ</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-mobile-alt"></i>
-                    <h3>মোবাইল অ্যাপ</h3>
-                    <p>Android ও iOS এর জন্য নেটিভ ও হাইব্রিড অ্যাপ</p>
-                    <ul>
-                        <li>React Native</li>
-                        <li>Flutter</li>
-                        <li>iOS & Android</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>ডিজিটাল মার্কেটিং</h3>
-                    <p>আপনার ব্যবসাকে অনলাইনে এগিয়ে নিন</p>
-                    <ul>
-                        <li>SEO অপ্টিমাইজেশন</li>
-                        <li>সোশ্যাল মিডিয়া মার্কেটিং</li>
-                        <li>কনটেন্ট মার্কেটিং</li>
-                    </ul>
+            <div class="editor-area">
+                <input type="text" class="note-title" id="noteTitle" placeholder="Note Title">
+                <div class="note-content" id="noteContent" contenteditable="true" placeholder="Start typing your note here...">
+                    <!-- Note content will be here -->
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>আমাদের গল্প</h2>
-                    <p>২০২০ সালে প্রতিষ্ঠিত, TechoSoft已经成为 বাংলাদেশের领先的ডিজিটাল সলিউশন প্রদানকারী। আমরা বিশ্বাস করি প্রযুক্তির মাধ্যমে ব্যবসার রূপান্তর সম্ভব।</p>
-                    <div class="stats">
-                        <div class="stat">
-                            <h3>50+</h3>
-                            <p>সফল প্রোজেক্ট</p>
-                        </div>
-                        <div class="stat">
-                            <h3>30+</h3>
-                            <p>সন্তুষ্ট ক্লায়েন্ট</p>
-                        </div>
-                        <div class="stat">
-                            <h3>5+</h3>
-                            <p>বছরের অভিজ্ঞতা</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Our Team">
-                </div>
+    <!-- Export Options Modal -->
+    <div class="overlay" id="exportOverlay"></div>
+    <div class="export-options" id="exportOptions">
+        <h3>Export Note As</h3>
+        <div class="export-options-grid">
+            <div class="export-option pdf" data-format="pdf">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDF</span>
+            </div>
+            <div class="export-option txt" data-format="txt">
+                <i class="fas fa-file-alt"></i>
+                <span>TXT</span>
+            </div>
+            <div class="export-option docx" data-format="docx">
+                <i class="fas fa-file-word"></i>
+                <span>Word</span>
+            </div>
+            <div class="export-option xlsx" data-format="xlsx">
+                <i class="fas fa-file-excel"></i>
+                <span>Excel</span>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
-        <div class="container">
-            <h2 class="section-title">আমাদের কাজ</h2>
-            <div class="portfolio-grid">
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1556655848-f3a7046a8c2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Project 1">
-                    <div class="portfolio-overlay">
-                        <h3>ই-কমার্স প্ল্যাটফর্ম</h3>
-                        <p>পূর্ণাঙ্গ অনলাইন শপিং সলিউশন</p>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Project 2">
-                    <div class="portfolio-overlay">
-                        <h3>মোবাইল ব্যাংকিং অ্যাপ</h3>
-                        <p>সুরক্ষিত ফিনান্সিয়াল অ্যাপ্লিকেশন</p>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Project 3">
-                    <div class="portfolio-overlay">
-                        <h3>ক cooperateপোরেট ওয়েবসাইট</h3>
-                        <p>আধুনিক ব্যবসায়িক ওয়েবসাইট</p>
-                    </div>
-                </div>
-            </div>
+    <!-- Drawing Canvas -->
+    <div class="drawing-mode" id="drawingMode">
+        <canvas id="drawingCanvas" width="500" height="300"></canvas>
+        <div class="drawing-controls">
+            <button class="btn" id="saveDrawingBtn">
+                <i class="fas fa-check"></i> Insert
+            </button>
+            <button class="btn btn-delete" id="cancelDrawingBtn">
+                <i class="fas fa-times"></i> Cancel
+            </button>
         </div>
-    </section>
+    </div>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">যোগাযোগ করুন</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>আমাদের সাথে যোগাযোগ করুন</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p>গুলশান, ঢাকা, বাংলাদেশ</p>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <p>+880 1XXX-XXXXXX</p>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <p>info@techosoft.com</p>
-                    </div>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <form class="contact-form">
-                    <input type="text" placeholder="আপনার নাম" required>
-                    <input type="email" placeholder="ইমেইল ঠিকানা" required>
-                    <input type="tel" placeholder="ফোন নম্বর">
-                    <textarea placeholder="আপনার মেসেজ" rows="5" required></textarea>
-                    <button type="submit" class="btn btn-primary">মেসেজ পাঠান</button>
-                </form>
-            </div>
-        </div>
-    </section>
+    <script>
+        // Application state
+        const state = {
+            notes: JSON.parse(localStorage.getItem('myNotepadNotes')) || [],
+            currentNoteId: null,
+            isDrawing: false,
+            drawingShape: null,
+            drawingColor: '#000000',
+            drawingStartX: 0,
+            drawingStartY: 0,
+            isDrawingMode: false
+        };
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>TechoSoft</h3>
-                    <p>আপনার ডিজিটাল transformation এর বিশ্বস্ত পার্টনার</p>
-                </div>
-                <div class="footer-section">
-                    <h4>দ্রুত লিংক</h4>
-                    <a href="#home">হোম</a>
-                    <a href="#services">সেবাসমূহ</a>
-                    <a href="#about">আমাদের সম্পর্কে</a>
-                    <a href="#contact">যোগাযোগ</a>
-                </div>
-                <div class="footer-section">
-                    <h4>সেবাসমূহ</h4>
-                    <a href="#">ওয়েব ডেভেলপমেন্ট</a>
-                    <a href="#">মোবাইল অ্যাপ</a>
-                    <a href="#">ডিজিটাল মার্কেটিং</a>
-                </div>
-                <div class="footer-section">
-                    <h4>নিউজলেটার</h4>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="আপনার ইমেইল">
-                        <button type="submit">সাবস্ক্রাইব</button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; ২০২৫ TechoSoft. সকল অধিকার সংরক্ষিত।</p>
-            </div>
-        </div>
-    </footer>
+        // DOM Elements
+        const notesList = document.getElementById('notesList');
+        const noteTitle = document.getElementById('noteTitle');
+        const noteContent = document.getElementById('noteContent');
+        const newNoteBtn = document.getElementById('newNoteBtn');
+        const deleteNoteBtn = document.getElementById('deleteNoteBtn');
+        const exportNoteBtn = document.getElementById('exportNoteBtn');
+        const exportOptions = document.getElementById('exportOptions');
+        const exportOverlay = document.getElementById('exportOverlay');
+        const tableBtn = document.getElementById('tableBtn');
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const drawingMode = document.getElementById('drawingMode');
+        const saveDrawingBtn = document.getElementById('saveDrawingBtn');
+        const cancelDrawingBtn = document.getElementById('cancelDrawingBtn');
+        const lineBtn = document.getElementById('lineBtn');
+        const rectangleBtn = document.getElementById('rectangleBtn');
+        const circleBtn = document.getElementById('circleBtn');
+        const arrowBtn = document.getElementById('arrowBtn');
+        const colorOptions = document.querySelectorAll('.color-option');
 
-    <script src="script.js"></script>
+        // Initialize the app
+        function init() {
+            renderNotesList();
+            setupEventListeners();
+            
+            // If there are notes, load the first one
+            if (state.notes.length > 0) {
+                loadNote(state.notes[0].id);
+            } else {
+                createNewNote();
+            }
+            
+            // Setup auto numbering
+            setupAutoNumbering();
+        }
+
+        // Render notes list in sidebar
+        function renderNotesList() {
+            notesList.innerHTML = '';
+            
+            if (state.notes.length === 0) {
+                notesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <h3>No notes yet</h3>
+                        <p>Create your first note to get started</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            state.notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.className = `note-item ${state.currentNoteId === note.id ? 'active' : ''}`;
+                noteElement.dataset.id = note.id;
+                
+                // Get preview text (first 50 chars without HTML)
+                const previewText = note.content.replace(/<[^>]*>/g, '').substring(0, 50);
+                const date = new Date(note.updatedAt).toLocaleDateString();
+                
+                noteElement.innerHTML = `
+                    <h3>${note.title || 'Untitled Note'}</h3>
+                    <p>${previewText || 'Empty note...'}</p>
+                    <div class="note-date">Updated: ${date}</div>
+                `;
+                
+                noteElement.addEventListener('click', () => loadNote(note.id));
+                notesList.appendChild(noteElement);
+            });
+        }
+
+        // Create a new note
+        function createNewNote() {
+            const newNote = {
+                id: Date.now().toString(),
+                title: 'Untitled Note',
+                content: '',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            state.notes.unshift(newNote);
+            state.currentNoteId = newNote.id;
+            saveNotes();
+            renderNotesList();
+            
+            noteTitle.value = newNote.title;
+            noteContent.innerHTML = '';
+            
+            // Focus on title
+            setTimeout(() => noteTitle.focus(), 100);
+        }
+
+        // Load a note by ID
+        function loadNote(noteId) {
+            const note = state.notes.find(n => n.id === noteId);
+            if (!note) return;
+            
+            state.currentNoteId = noteId;
+            noteTitle.value = note.title;
+            noteContent.innerHTML = note.content;
+            
+            renderNotesList();
+        }
+
+        // Save the current note
+        function saveCurrentNote() {
+            if (!state.currentNoteId) return;
+            
+            const noteIndex = state.notes.findIndex(n => n.id === state.currentNoteId);
+            if (noteIndex === -1) return;
+            
+            state.notes[noteIndex].title = noteTitle.value || 'Untitled Note';
+            state.notes[noteIndex].content = noteContent.innerHTML;
+            state.notes[noteIndex].updatedAt = new Date().toISOString();
+            
+            saveNotes();
+            renderNotesList();
+        }
+
+        // Delete the current note
+        function deleteCurrentNote() {
+            if (!state.currentNoteId) return;
+            
+            const confirmDelete = confirm('Are you sure you want to delete this note?');
+            if (!confirmDelete) return;
+            
+            state.notes = state.notes.filter(note => note.id !== state.currentNoteId);
+            saveNotes();
+            
+            // Load another note or create a new one
+            if (state.notes.length > 0) {
+                loadNote(state.notes[0].id);
+            } else {
+                createNewNote();
+            }
+            
+            renderNotesList();
+        }
+
+        // Save notes to localStorage
+        function saveNotes() {
+            localStorage.setItem('myNotepadNotes', JSON.stringify(state.notes));
+        }
+
+        // Setup auto numbering
+        function setupAutoNumbering() {
+            noteContent.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const selection = window.getSelection();
+                    const node = selection.anchorNode;
+                    
+                    if (node && node.nodeType === Node.TEXT_NODE) {
+                        const text = node.textContent.substring(0, selection.anchorOffset);
+                        const match = text.match(/(\d+|[১২৩৪৫৬৭৮৯০]+|[١٢٣٤٥٦٧٨٩٠]+)\.\s*$/);
+                        
+                        if (match) {
+                            e.preventDefault();
+                            
+                            // Get the number
+                            const numStr = match[1];
+                            let nextNum;
+                            
+                            // Check if it's Bengali numbers
+                            if (/[১২৩৪৫৬৭৮৯০]/.test(numStr)) {
+                                const bengaliNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+                                const num = parseInt(numStr.split('').map(ch => {
+                                    return bengaliNumbers.indexOf(ch);
+                                }).join(''));
+                                nextNum = (num + 1).toString().split('').map(d => bengaliNumbers[parseInt(d)]).join('');
+                            }
+                            // Check if it's Arabic numbers
+                            else if (/[١٢٣٤٥٦٧٨٩٠]/.test(numStr)) {
+                                const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+                                const num = parseInt(numStr.split('').map(ch => {
+                                    return arabicNumbers.indexOf(ch);
+                                }).join(''));
+                                nextNum = (num + 1).toString().split('').map(d => arabicNumbers[parseInt(d)]).join('');
+                            }
+                            // Default to English numbers
+                            else {
+                                nextNum = (parseInt(numStr) + 1).toString();
+                            }
+                            
+                            // Insert the next number
+                            const range = selection.getRangeAt(0);
+                            const p = document.createElement('p');
+                            p.innerHTML = `${nextNum}. `;
+                            
+                            range.deleteContents();
+                            range.insertNode(p);
+                            
+                            // Move cursor after the number
+                            const newRange = document.createRange();
+                            newRange.setStartAfter(p);
+                            newRange.collapse(true);
+                            selection.removeAllRanges();
+                            selection.addRange(newRange);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Setup drawing functionality
+        function setupDrawing() {
+            const ctx = drawingCanvas.getContext('2d');
+            let isDrawing = false;
+            let startX, startY;
+            
+            // Get mouse position relative to canvas
+            function getMousePos(canvas, evt) {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+            }
+            
+            // Start drawing
+            drawingCanvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const pos = getMousePos(drawingCanvas, e);
+                startX = pos.x;
+                startY = pos.y;
+                state.drawingStartX = startX;
+                state.drawingStartY = startY;
+            });
+            
+            // Draw on mouse move
+            drawingCanvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing || !state.drawingShape) return;
+                
+                const pos = getMousePos(drawingCanvas, e);
+                const currentX = pos.x;
+                const currentY = pos.y;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                
+                // Draw the shape
+                ctx.strokeStyle = state.drawingColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                switch(state.drawingShape) {
+                    case 'line':
+                        ctx.moveTo(startX, startY);
+                        ctx.lineTo(currentX, currentY);
+                        break;
+                    case 'rectangle':
+                        const rectWidth = currentX - startX;
+                        const rectHeight = currentY - startY;
+                        ctx.rect(startX, startY, rectWidth, rectHeight);
+                        break;
+                    case 'circle':
+                        const radius = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));
+                        ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+                        break;
+                    case 'arrow':
+                        drawArrow(ctx, startX, startY, currentX, currentY);
+                        break;
+                }
+                
+                ctx.stroke();
+            });
+            
+            // Stop drawing
+            drawingCanvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+            
+            // Function to draw an arrow
+            function drawArrow(ctx, fromX, fromY, toX, toY) {
+                const headlen = 15;
+                const angle = Math.atan2(toY - fromY, toX - fromX);
+                
+                ctx.moveTo(fromX, fromY);
+                ctx.lineTo(toX, toY);
+                ctx.moveTo(toX, toY);
+                ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI/6), toY - headlen * Math.sin(angle - Math.PI/6));
+                ctx.moveTo(toX, toY);
+                ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI/6), toY - headlen * Math.sin(angle + Math.PI/6));
+            }
+            
+            // Save drawing to note
+            saveDrawingBtn.addEventListener('click', () => {
+                const dataURL = drawingCanvas.toDataURL('image/png');
+                const img = document.createElement('img');
+                img.src = dataURL;
+                img.className = 'drawing-canvas';
+                img.style.maxWidth = '100%';
+                
+                // Insert into note
+                noteContent.focus();
+                document.execCommand('insertHTML', false, img.outerHTML);
+                
+                // Close drawing mode
+                drawingMode.style.display = 'none';
+                exportOverlay.style.display = 'none';
+                state.drawingShape = null;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            });
+            
+            // Cancel drawing
+            cancelDrawingBtn.addEventListener('click', () => {
+                drawingMode.style.display = 'none';
+                exportOverlay.style.display = 'none';
+                state.drawingShape = null;
+                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Note title and content changes
+            noteTitle.addEventListener('input', saveCurrentNote);
+            noteContent.addEventListener('input', saveCurrentNote);
+            
+            // Buttons
+            newNoteBtn.addEventListener('click', createNewNote);
+            deleteNoteBtn.addEventListener('click', deleteCurrentNote);
+            exportNoteBtn.addEventListener('click', () => {
+                exportOptions.style.display = 'block';
+                exportOverlay.style.display = 'block';
+            });
+            
+            // Export overlay
+            exportOverlay.addEventListener('click', () => {
+                exportOptions.style.display = 'none';
+                exportOverlay.style.display = 'none';
+            });
+            
+            // Export options
+            document.querySelectorAll('.export-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const format = this.dataset.format;
+                    exportNote(format);
+                    
+                    // Close export modal
+                    exportOptions.style.display = 'none';
+                    exportOverlay.style.display = 'none';
+                });
+            });
+            
+            // Table button
+            tableBtn.addEventListener('click', () => {
+                // Create a simple table (2x2)
+                const tableHTML = `
+                    <table>
+                        <tr>
+                            <td contenteditable="true">Cell 1</td>
+                            <td contenteditable="true">Cell 2</td>
+                        </tr>
+                        <tr>
+                            <td contenteditable="true">Cell 3</td>
+                            <td contenteditable="true">Cell 4</td>
+                        </tr>
+                    </table>
+                `;
+                
+                noteContent.focus();
+                document.execCommand('insertHTML', false, tableHTML);
+                saveCurrentNote();
+            });
+            
+            // Drawing shape buttons
+            lineBtn.addEventListener('click', () => startDrawing('line'));
+            rectangleBtn.addEventListener('click', () => startDrawing('rectangle'));
+            circleBtn.addEventListener('click', () => startDrawing('circle'));
+            arrowBtn.addEventListener('click', () => startDrawing('arrow'));
+            
+            // Color picker
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    state.drawingColor = this.dataset.color;
+                });
+            });
+            
+            // Setup drawing functionality
+            setupDrawing();
+        }
+
+        // Start drawing mode
+        function startDrawing(shape) {
+            state.drawingShape = shape;
+            drawingMode.style.display = 'block';
+            exportOverlay.style.display = 'block';
+            
+            // Position the drawing modal
+            const rect = noteContent.getBoundingClientRect();
+            drawingMode.style.top = `${rect.top + 50}px`;
+            drawingMode.style.left = `${rect.left + 50}px`;
+        }
+
+        // Export note functionality (simulated)
+        function exportNote(format) {
+            if (!state.currentNoteId) return;
+            
+            const note = state.notes.find(n => n.id === state.currentNoteId);
+            if (!note) return;
+            
+            let message = '';
+            let fileName = `${note.title.replace(/\s+/g, '_')}.${format}`;
+            
+            switch(format) {
+                case 'pdf':
+                    message = `Note exported as PDF: ${fileName}\n(Note: In a real implementation, this would generate a PDF with formatting preserved)`;
+                    break;
+                case 'txt':
+                    // Extract text content from HTML
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = note.content;
+                    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+                    
+                    // Create download link for TXT
+                    const txtBlob = new Blob([`${note.title}\n\n${textContent}`], {type: 'text/plain'});
+                    const txtUrl = URL.createObjectURL(txtBlob);
+                    const txtLink = document.createElement('a');
+                    txtLink.href = txtUrl;
+                    txtLink.download = fileName;
+                    document.body.appendChild(txtLink);
+                    txtLink.click();
+                    document.body.removeChild(txtLink);
+                    URL.revokeObjectURL(txtUrl);
+                    
+                    message = `Note exported as TXT: ${fileName}`;
+                    break;
+                case 'docx':
+                    message = `Note exported as Microsoft Word: ${fileName}\n(Note: In a real implementation, this would generate a .docx file)`;
+                    break;
+                case 'xlsx':
+                    message = `Note exported as Microsoft Excel: ${fileName}\n(Note: In a real implementation, this would generate a .xlsx file)`;
+                    break;
+            }
+            
+            if (message) {
+                alert(message);
+            }
+        }
+
+        // Initialize the application
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
