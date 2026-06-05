@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>বকেয়া আদায় - মাদরাসা ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-sidebar: #0f172a;
+            --bg-sidebar-hover: #1e293b;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-sidebar: #e2e8f0;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-soft: #eff6ff;
+            --danger: #ef4444;
+            --danger-dark: #b91c1c;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --radius-card: 16px;
+            --radius-element: 10px;
+            --shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --transition: all 0.2s ease;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-sidebar: #020617;
+            --bg-sidebar-hover: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --accent-soft: #1e293b;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        /* ----- টপবার (সংকুচিত) ----- */
+        .topbar {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 998;
+            backdrop-filter: blur(8px);
+        }
+        .topbar-left { display: flex; gap: 0.75rem; align-items: center; }
+        .menu-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+        }
+        .menu-btn:hover { background: var(--bg-primary); }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .logo i { width: 18px; height: 18px; }
+        .topbar-right { display: flex; gap: 0.5rem; }
+        .icon-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+        .icon-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
+
+        /* ----- সাইডবার (সংকুচিত) ----- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 250px;
+            height: 100dvh;
+            background: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            transition: 0.2s;
+            padding: 1rem 0;
+            z-index: 999;
+            overflow-y: auto;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 0 1rem 1rem; border-bottom: 1px solid #1e293b; margin-bottom: 0.75rem; }
+        .sidebar-nav { padding: 0 0.5rem; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.6rem 0.8rem;
+            color: var(--text-sidebar);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 0.2rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .nav-item i { width: 18px; height: 18px; }
+        .nav-item:hover { background: var(--bg-sidebar-hover); color: white; }
+        .nav-item.active { background: var(--accent); color: white; }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(2px);
+            display: none;
+            z-index: 998;
+        }
+        .overlay.active { display: block; }
+
+        /* ----- কন্টেন্ট (কম্প্যাক্ট) ----- */
+        .content {
+            padding: 1rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow);
+        }
+        /* ফিল্টার বার (গ্রিড) */
+        .filter-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            align-items: end;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .filter-group label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .filter-group select, .filter-group input {
+            padding: 0.5rem 0.6rem;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-element);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .btn-small {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.7rem;
+        }
+        .btn-danger { background: var(--danger); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+
+        /* মোট বকেয়া বার */
+        .total-due-bar {
+            background: var(--bg-primary);
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-element);
+            margin-bottom: 1rem;
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .total-due-bar strong {
+            font-size: 1.3rem;
+            color: var(--danger);
+        }
+        /* টেবিল */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        th, td {
+            padding: 0.6rem 0.4rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+            background: var(--bg-primary);
+        }
+        th:hover { background: var(--accent-soft); }
+        .due-high {
+            background-color: rgba(239, 68, 68, 0.2);
+            font-weight: 700;
+            color: var(--danger);
+        }
+        .overdue-row {
+            background-color: rgba(239, 68, 68, 0.08);
+        }
+        /* মডাল */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 1.2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            border-radius: var(--radius-element);
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+        }
+
+        /* রেস্পন্সিভ */
+        @media (min-width: 1024px) {
+            .sidebar { left: 0; }
+            .menu-btn { display: none; }
+            .overlay { display: none !important; }
+            .content { margin-left: 250px; }
+            .topbar { margin-left: 250px; }
+        }
+        @media (max-width: 768px) {
+            .filter-bar { grid-template-columns: 1fr; gap: 0.6rem; }
+            th, td { font-size: 0.7rem; padding: 0.4rem; }
+            .btn { padding: 0.4rem 0.7rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+        <div class="logo"><i data-lucide="graduation-cap"></i><span>মাদরাসা ERP</span></div>
+    </div>
+    <div class="topbar-right">
+        <button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun" id="theme-icon"></i></button>
+        <button class="icon-btn" onclick="window.location.href='login.html'"><i data-lucide="log-out"></i></button>
+    </div>
+</div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="logo"><i data-lucide="graduation-cap"></i><span>মাদরাসা ERP</span></div></div>
+    <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i><span>ড্যাশবোর্ড</span></a>
+        <a href="students.html" class="nav-item"><i data-lucide="users"></i><span>ছাত্র তালিকা</span></a>
+        <a href="payment.html" class="nav-item"><i data-lucide="wallet"></i><span>পেমেন্ট</span></a>
+        <a href="due_list.html" class="nav-item active"><i data-lucide="alert-circle"></i><span>বকেয়া ছাত্র</span></a>
+        <a href="expenses.html" class="nav-item"><i data-lucide="receipt"></i><span>খরচ</span></a>
+        <a href="reports.html" class="nav-item"><i data-lucide="bar-chart-2"></i><span>রিপোর্ট</span></a>
+        <a href="inactive_students.html" class="nav-item"><i data-lucide="archive"></i><span>নিষ্ক্রিয় ছাত্র</span></a>
+        <a href="settings.html" class="nav-item"><i data-lucide="settings"></i><span>সেটিংস</span></a>
+    </nav>
+</div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="content">
+    <div class="card">
+        <!-- ফিল্টার সেকশন – তারিখ রেঞ্জ সহ -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>ক্লাস</label>
+                <select id="classFilter">
+                    <option value="">সব</option>
+                    <option value="প্লে">প্লে</option><option value="নার্সারি">নার্সারি</option>
+                    <option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option>
+                    <option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option><option value="৬ষ্ঠ">৬ষ্ঠ</option>
+                    <option value="হিফয">হিফয</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>আবাসিক</label>
+                <select id="residentialFilter">
+                    <option value="">সব</option>
+                    <option value="আবাসিক">শুধু আবাসিক</option>
+                    <option value="অনাবাসিক">শুধু অনাবাসিক</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>মাস (ফি-সংক্রান্ত)</label>
+                <input type="month" id="monthFilter">
+            </div>
+            <div class="filter-group">
+                <label>তারিখ থেকে (mm/dd/yyyy)</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="filter-group">
+                <label>তারিখ পর্যন্ত (mm/dd/yyyy)</label>
+                <input type="date" id="endDate">
+            </div>
+            <div class="filter-group">
+                <label>সার্চ</label>
+                <input type="text" id="searchInput" placeholder="নাম/আইডি..." onkeyup="filterTable()">
+            </div>
+            <div class="filter-group" style="flex-direction: row; gap: 0.5rem; align-items: end;">
+                <button class="btn" onclick="loadDueList()"><i data-lucide="search"></i> ফিল্টার</button>
+                <button class="btn" onclick="exportToExcel()"><i data-lucide="download"></i> এক্সেল</button>
+                <button class="btn" onclick="window.print()"><i data-lucide="printer"></i> প্রিন্ট</button>
+            </div>
+        </div>
+
+        <div id="totalDueDisplay" class="total-due-bar">
+            মোট বকেয়া: <strong id="totalDueAmount">0</strong> টাকা
+        </div>
+
+        <div class="table-responsive">
+            <table id="dueTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">রোল</th>
+                        <th onclick="sortTable(1)">ছাত্রের নাম</th>
+                        <th onclick="sortTable(2)">ক্লাস</th>
+                        <th onclick="sortTable(3)">মোবাইল</th>
+                        <th onclick="sortTable(4)">চলতি মাস বকেয়া</th>
+                        <th onclick="sortTable(5)">মোট বকেয়া</th>
+                        <th onclick="sortTable(6)">সর্বশেষ জমা</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="dueTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- পেমেন্ট মডাল -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h3 style="margin-bottom: 1rem;">দ্রুত পেমেন্ট নিন</h3>
+        <form id="quickPaymentForm">
+            <input type="hidden" id="quickStudentId">
+            <div class="form-group"><label>ছাত্রের নাম</label><input type="text" id="quickStudentName" disabled></div>
+            <div class="form-group"><label>মাস</label><input type="month" id="quickMonth" readonly></div>
+            <div class="form-group"><label>টিউশন জমা</label><input type="number" id="quickTuitionPaid" value="0"></div>
+            <div class="form-group"><label>খাবার জমা</label><input type="number" id="quickFoodPaid" value="0"></div>
+            <div class="form-group"><label>অন্যান্য জমা</label><input type="number" id="quickOtherPaid" value="0"></div>
+            <div class="form-group"><label>ছাড় (টিউশন)</label><input type="number" id="quickDiscountTuition" value="0"></div>
+            <div class="form-group"><label>ছাড় (খাবার)</label><input type="number" id="quickDiscountFood" value="0"></div>
+            <div class="form-group"><label>ছাড় (অন্যান্য)</label><input type="number" id="quickDiscountOther" value="0"></div>
+            <div style="display:flex; gap:0.7rem; justify-content:flex-end; margin-top:1rem;">
+                <button type="button" class="btn" style="background:gray;" onclick="closePaymentModal()">বাতিল</button>
+                <button type="submit" class="btn btn-success">জমা দিন</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+    let fullDueData = [];
+    let displayedData = [];
+    let sortColumn = 5;
+    let sortAsc = false;
+
+    // ---- মেনু ও থিম ফাংশন (অপরিবর্তিত) ----
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("active");
+        document.getElementById("overlay").classList.toggle("active");
+    }
+    function toggleTheme() {
+        const html = document.documentElement;
+        const curr = html.getAttribute('data-theme');
+        const n = curr === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', n);
+        localStorage.setItem('theme', n);
+        const icon = document.getElementById('theme-icon');
+        icon.setAttribute('data-lucide', n === 'dark' ? 'moon' : 'sun');
+        lucide.createIcons();
+    }
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-icon').setAttribute('data-lucide', savedTheme === 'dark' ? 'moon' : 'sun');
+
+    // URL থেকে মাস প্রিসেট নেওয়া
+    const urlParams = new URLSearchParams(window.location.search);
+    const presetMonth = urlParams.get('month');
+    if(presetMonth) document.getElementById('monthFilter').value = presetMonth;
+    else {
+        const now = new Date();
+        document.getElementById('monthFilter').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    }
+
+    // ---- ডেটা লোড (তারিখ রেঞ্জ সহ) ----
+    async function loadDueList() {
+        const classVal = document.getElementById('classFilter').value;
+        const residential = document.getElementById('residentialFilter').value;
+        const month = document.getElementById('monthFilter').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        let url = `/api/due_list?month=${month}`;
+        if(classVal) url += `&class=${encodeURIComponent(classVal)}`;
+        if(residential) url += `&residential=${encodeURIComponent(residential)}`;
+        if(startDate) url += `&start_date=${startDate}`;
+        if(endDate) url += `&end_date=${endDate}`;
+        
+        const res = await fetch(url);
+        fullDueData = await res.json();
+        applySearchAndSort();
+        const totalDue = fullDueData.reduce((sum, s) => sum + s.total_due, 0);
+        document.getElementById('totalDueAmount').innerText = totalDue.toLocaleString();
+    }
+
+    function applySearchAndSort() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        let filtered = fullDueData.filter(s => 
+            s.name.toLowerCase().includes(searchTerm) || 
+            s.id.toLowerCase().includes(searchTerm)
+        );
+        filtered.sort((a,b) => {
+            let aVal, bVal;
+            switch(sortColumn) {
+                case 0: aVal = a.id; bVal = b.id; break;
+                case 1: aVal = a.name; bVal = b.name; break;
+                case 2: aVal = a.class; bVal = b.class; break;
+                case 3: aVal = a.mobile || ''; bVal = b.mobile || ''; break;
+                case 4: aVal = a.current_month_due; bVal = b.current_month_due; break;
+                case 5: aVal = a.total_due; bVal = b.total_due; break;
+                case 6: aVal = a.last_payment; bVal = b.last_payment; break;
+                default: aVal = a.total_due; bVal = b.total_due;
+            }
+            if(typeof aVal === 'number') return sortAsc ? aVal - bVal : bVal - aVal;
+            else return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        });
+        displayedData = filtered;
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('dueTableBody');
+        tbody.innerHTML = '';
+        displayedData.forEach(s => {
+            const row = tbody.insertRow();
+            let isOverdue = false;
+            if(s.last_payment !== 'কখনও নয়') {
+                const lastDate = new Date(s.last_payment);
+                const now = new Date();
+                const diffDays = (now - lastDate) / (1000*60*60*24);
+                if(diffDays > 60) isOverdue = true;
+            } else if(s.last_payment === 'কখনও নয়') isOverdue = true;
+            if(isOverdue) row.classList.add('overdue-row');
+            
+            row.insertCell(0).innerText = s.id;
+            row.insertCell(1).innerText = s.name;
+            row.insertCell(2).innerText = s.class;
+            row.insertCell(3).innerText = s.mobile || '-';
+            const currCell = row.insertCell(4);
+            currCell.innerText = s.current_month_due.toLocaleString();
+            if(s.current_month_due > 5000) currCell.classList.add('due-high');
+            const totalCell = row.insertCell(5);
+            totalCell.innerText = s.total_due.toLocaleString();
+            if(s.total_due > 5000) totalCell.classList.add('due-high');
+            row.insertCell(6).innerText = s.last_payment;
+            const actionCell = row.insertCell(7);
+            actionCell.innerHTML = `
+                <button class="btn btn-small" onclick="openPaymentModal('${s.id}','${s.name}')">আদায়</button>
+                <button class="btn btn-small" style="background:var(--warning)" onclick="sendSMS('${s.mobile}','${s.name}',${s.current_month_due})">SMS</button>
+                <button class="btn btn-small" onclick="window.location.href='profile.html?id=${s.id}'">বিস্তারিত</button>
+            `;
+        });
+    }
+
+    function filterTable() { applySearchAndSort(); }
+    function sortTable(colIndex) {
+        if(sortColumn === colIndex) sortAsc = !sortAsc;
+        else { sortColumn = colIndex; sortAsc = false; }
+        applySearchAndSort();
+    }
+
+    // ---- পেমেন্ট মডাল ----
+    function openPaymentModal(studentId, studentName) {
+        document.getElementById('quickStudentId').value = studentId;
+        document.getElementById('quickStudentName').value = studentName;
+        document.getElementById('quickMonth').value = document.getElementById('monthFilter').value;
+        document.getElementById('quickTuitionPaid').value = 0;
+        document.getElementById('quickFoodPaid').value = 0;
+        document.getElementById('quickOtherPaid').value = 0;
+        document.getElementById('quickDiscountTuition').value = 0;
+        document.getElementById('quickDiscountFood').value = 0;
+        document.getElementById('quickDiscountOther').value = 0;
+        document.getElementById('paymentModal').classList.add('active');
+    }
+    function closePaymentModal() { document.getElementById('paymentModal').classList.remove('active'); }
+    
+    document.getElementById('quickPaymentForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const payload = {
+            student_id: document.getElementById('quickStudentId').value,
+            payment_month: document.getElementById('quickMonth').value,
+            tuition_paid: parseInt(document.getElementById('quickTuitionPaid').value) || 0,
+            food_paid: parseInt(document.getElementById('quickFoodPaid').value) || 0,
+            other_paid: parseInt(document.getElementById('quickOtherPaid').value) || 0,
+            discount_tuition: parseInt(document.getElementById('quickDiscountTuition').value) || 0,
+            discount_food: parseInt(document.getElementById('quickDiscountFood').value) || 0,
+            discount_other: parseInt(document.getElementById('quickDiscountOther').value) || 0,
+            received_by: 'admin'
+        };
+        const res = await fetch('/api/add_payment', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if(data.status === 'ok') {
+            alert(`পেমেন্ট সফল! রসিদ: ${data.receipt_no}`);
+            closePaymentModal();
+            loadDueList();
+        } else alert('ত্রুটি: '+data.error);
+    };
+
+    function sendSMS(mobile, name, dueAmount) {
+        if(!mobile || mobile === '-') { alert('মোবাইল নম্বর নেই'); return; }
+        const monthName = document.getElementById('monthFilter').value;
+        const message = `প্রিয় অভিভাবক, ${name} এর ${monthName} মাসের বকেয়া ${dueAmount} টাকা। দয়া করে পরিশোধ করুন। - মাদরাসা`;
+        window.open(`sms:${mobile}?body=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function exportToExcel() {
+        let csv = "রোল,ছাত্রের নাম,ক্লাস,মোবাইল,চলতি মাস বকেয়া,মোট বকেয়া,সর্বশেষ জমা\n";
+        displayedData.forEach(s => {
+            csv += `"${s.id}","${s.name}","${s.class}","${s.mobile || ''}",${s.current_month_due},${s.total_due},"${s.last_payment}"\n`;
+        });
+        const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", "due_list.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('searchInput').addEventListener('keyup', filterTable);
+    loadDueList();
+</script>
+</body>
+</html>
