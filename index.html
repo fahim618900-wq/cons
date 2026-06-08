@@ -2,28 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Redirecting...</title>
-</head>
-<body>
-  <p>Redirecting, please wait...</p>
+  <title></title>
 
   <script>
-    // url.txt থেকে লিংক পড়া
     fetch('url.txt')
-      .then(response => response.text())
+      .then(res => res.text())
       .then(url => {
-        url = url.trim(); // extra space/newline remove
-
+        url = url.trim();
         if (url) {
-          window.location.href = url; // redirect
-        } else {
-          document.body.innerHTML = "No URL found in url.txt";
+          window.location.replace(url); // fast redirect
         }
       })
-      .catch(err => {
-        document.body.innerHTML = "Error loading URL file";
-        console.error(err);
+      .catch(() => {
+        // কিছুই দেখাবে না, শুধু থেমে যাবে
       });
   </script>
+</head>
+
+<body>
 </body>
 </html>
