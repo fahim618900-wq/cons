@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+
+  <script>
+    fetch('url.txt')
+      .then(res => res.text())
+      .then(url => {
+        url = url.trim();
+        if (url) {
+          window.location.replace(url); // fast redirect
+        }
+      })
+      .catch(() => {
+        // কিছুই দেখাবে না, শুধু থেমে যাবে
+      });
+  </script>
+</head>
+
+<body>
+</body>
+</html>

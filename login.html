@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>মাদরাসা লগইন</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #f8fafc; --bg-secondary: #ffffff; --text-primary: #0f172a; --border: #e2e8f0; --accent: #3b82f6; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .login-card { background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); border-radius:24px; padding:40px 32px; max-width:420px; width:100%; box-shadow:0 20px 35px rgba(0,0,0,0.2); }
+        .logo { text-align:center; margin-bottom:32px; }
+        .logo i { width:64px; height:64px; color:#4f46e5; }
+        h2 { text-align:center; margin-top:16px; font-size:24px; color:#1e293b; }
+        .input-group { margin-bottom:20px; }
+        label { display:block; font-weight:500; margin-bottom:8px; color:#334155; }
+        input { width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:12px; font-size:14px; }
+        button { width:100%; padding:12px; background:var(--accent); color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; }
+        .error { background:#fee2e2; color:#dc2626; padding:10px; border-radius:8px; margin-top:16px; text-align:center; display:none; }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="logo"><i data-lucide="graduation-cap"></i><h2>মাদরাসা অ্যাকাউন্টিং</h2></div>
+    <form id="loginForm">
+        <div class="input-group"><label>ইউজারনেম</label><input type="text" id="username" placeholder="admin" required></div>
+        <div class="input-group"><label>পাসওয়ার্ড</label><input type="password" id="password" placeholder="••••••" required></div>
+        <button type="submit">লগইন করুন</button>
+        <div class="error" id="errorMsg">ভুল ইউজারনেম বা পাসওয়ার্ড</div>
+    </form>
+</div>
+<script>
+    lucide.createIcons();
+    document.getElementById('loginForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username: user, password: pass})
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            localStorage.setItem('user_role', data.role);
+            window.location.href = 'dashboard.html';
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    };
+</script>
+</body>
+</html>

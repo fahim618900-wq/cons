@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>পেমেন্ট এন্ট্রি - মাদরাসা ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-sidebar: #0f172a;
+            --bg-sidebar-hover: #1e293b;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-sidebar: #e2e8f0;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-soft: #eff6ff;
+            --danger: #ef4444;
+            --danger-soft: #fee2e2;
+            --success: #10b981;
+            --radius-card: 16px;
+            --radius-element: 10px;
+            --shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --transition: all 0.2s ease;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-sidebar: #020617;
+            --bg-sidebar-hover: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --accent-soft: #1e293b;
+            --danger-soft: #7f1d1d;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        /* ----- ছোট ও মার্জিত টপবার ----- */
+        .topbar {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 998;
+            backdrop-filter: blur(8px);
+        }
+        .topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+        .menu-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+        }
+        .menu-btn:hover { background: var(--bg-primary); }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .logo i { width: 18px; height: 18px; }
+        .topbar-right { display: flex; gap: 0.5rem; }
+        .icon-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+        .icon-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
+        /* ----- সাইডবার (সংকুচিত) ----- */
+        .sidebar {
+            position: fixed; top: 0; left: -260px;
+            width: 250px;
+            height: 100dvh;
+            background: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            transition: 0.2s;
+            padding: 1rem 0;
+            z-index: 999;
+            overflow-y: auto;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 0 1rem 1rem; border-bottom: 1px solid #1e293b; margin-bottom: 0.75rem; }
+        .sidebar-nav { padding: 0 0.5rem; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.6rem 0.8rem;
+            color: var(--text-sidebar);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 0.2rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .nav-item i { width: 18px; height: 18px; }
+        .nav-item:hover { background: var(--bg-sidebar-hover); color: white; }
+        .nav-item.active { background: var(--accent); color: white; }
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(2px);
+            display: none;
+            z-index: 998;
+        }
+        .overlay.active { display: block; }
+        /* ----- কন্টেন্ট (কম্প্যাক্ট) ----- */
+        .content {
+            padding: 1rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        /* কার্ড */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow);
+        }
+        .card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .card h3 i { width: 18px; height: 18px; }
+        /* ফর্ম এলিমেন্ট */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-element);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+        }
+        /* ক্যাটাগরি রো */
+        .category-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+        .category-row select, .category-row input {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-element);
+        }
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition);
+        }
+        .btn-small {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.7rem;
+        }
+        .btn-danger {
+            background: var(--danger);
+        }
+        .btn-danger:hover { background: #dc2626; }
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+        /* টেবিল (মোবাইলে স্ক্রল) */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        th, td {
+            padding: 0.6rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        th {
+            background: var(--bg-primary);
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        /* রেস্পন্সিভ সাইডবার */
+        @media (min-width: 1024px) {
+            .sidebar { left: 0; }
+            .menu-btn { display: none; }
+            .overlay { display: none !important; }
+            .content { margin-left: 250px; }
+            .topbar { margin-left: 250px; }
+        }
+        @media (max-width: 640px) {
+            .category-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .category-row select, .category-row input {
+                grid-column: span 1;
+            }
+            .category-row button {
+                grid-column: span 2;
+                justify-self: start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+        <div class="logo"><i data-lucide="graduation-cap"></i><span>মাদরাসা ERP</span></div>
+    </div>
+    <div class="topbar-right">
+        <button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun" id="theme-icon"></i></button>
+        <button class="icon-btn" onclick="window.location.href='login.html'"><i data-lucide="log-out"></i></button>
+    </div>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo"><i data-lucide="graduation-cap"></i><span>মাদরাসা ERP</span></div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i><span>ড্যাশবোর্ড</span></a>
+        <a href="students.html" class="nav-item"><i data-lucide="users"></i><span>ছাত্র তালিকা</span></a>
+        <a href="payment.html" class="nav-item active"><i data-lucide="wallet"></i><span>পেমেন্ট</span></a>
+        <a href="due_list.html" class="nav-item"><i data-lucide="alert-circle"></i><span>বকেয়া ছাত্র</span></a>
+        <a href="expenses.html" class="nav-item"><i data-lucide="receipt"></i><span>খরচ</span></a>
+        <a href="reports.html" class="nav-item"><i data-lucide="bar-chart-2"></i><span>রিপোর্ট</span></a>
+        <a href="inactive_students.html" class="nav-item"><i data-lucide="archive"></i><span>নিষ্ক্রিয় ছাত্র</span></a>
+        <a href="settings.html" class="nav-item"><i data-lucide="settings"></i><span>সেটিংস</span></a>
+    </nav>
+</div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="content">
+    <!-- পেমেন্ট ফর্ম -->
+    <div class="card">
+        <h3><i data-lucide="plus-circle"></i> নতুন পেমেন্ট এন্ট্রি</h3>
+        <form id="paymentForm">
+            <div class="form-group">
+                <label>ছাত্র সার্চ করুন</label>
+                <input type="text" id="searchStudent" placeholder="আইডি বা নাম লিখুন" onkeyup="searchStudents()">
+                <select id="studentSelect" required>
+                    <option value="">ছাত্র নির্বাচন করুন</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>পেমেন্টের মাস</label>
+                <input type="month" id="paymentMonth" required>
+            </div>
+            <div id="categoriesContainer">
+                <div class="category-row">
+                    <select class="categoryType">
+                        <option value="tuition">টিউশন ফি</option>
+                        <option value="food">খাবার ফি</option>
+                        <option value="other">অন্যান্য</option>
+                    </select>
+                    <input type="number" class="paidAmount" placeholder="জমা টাকা">
+                    <input type="number" class="discountAmount" placeholder="ছাড়">
+                    <button type="button" class="btn btn-small btn-danger" onclick="removeCategory(this)">✖</button>
+                </div>
+            </div>
+            <button type="button" class="btn" onclick="addCategory()" style="margin-top: 0.5rem;">+ আরও ক্যাটাগরি</button>
+            <div style="margin-top: 1.2rem;">
+                <button type="submit" class="btn">সংরক্ষণ করুন</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- পেমেন্ট ইতিহাস -->
+    <div class="card">
+        <h3><i data-lucide="history"></i> পেমেন্ট ইতিহাস</h3>
+        <div class="table-responsive">
+            <table id="paymentTable">
+                <thead>
+                    <tr><th>রসিদ</th><th>ছাত্র</th><th>মাস</th><th>টিউশন</th><th>খাবার</th><th>অন্যান্য</th><th>মোট</th><th>তারিখ</th><th>অ্যাকশন</th></tr>
+                </thead>
+                <tbody id="paymentList"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+    let allStudents = [];
+
+    // ----- মেনু টগল (অরিজিনাল) -----
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("active");
+        document.getElementById("overlay").classList.toggle("active");
+    }
+
+    // ----- থিম টগল (অরিজিনাল) -----
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        const icon = document.getElementById('theme-icon');
+        icon.setAttribute('data-lucide', newTheme === 'dark' ? 'moon' : 'sun');
+        lucide.createIcons();
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-icon').setAttribute('data-lucide', savedTheme === 'dark' ? 'moon' : 'sun');
+    lucide.createIcons();
+
+    // মোবাইলে সাইডবার বন্ধ
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth < 1024) toggleMenu();
+        });
+    });
+
+    // ----- লজিক ফাংশন (অপরিবর্তিত) -----
+    async function loadStudents() {
+        try {
+            const res = await fetch('/api/students');
+            allStudents = await res.json();
+            searchStudents();
+        } catch(e) { console.error(e); }
+    }
+
+    function searchStudents() {
+        const query = document.getElementById('searchStudent').value.toLowerCase();
+        const filtered = allStudents.filter(s => s.name.toLowerCase().includes(query) || s.id.includes(query));
+        const select = document.getElementById('studentSelect');
+        select.innerHTML = '<option value="">ছাত্র নির্বাচন করুন</option>';
+        filtered.forEach(s => {
+            select.innerHTML += `<option value="${s.id}">${s.id} - ${s.name} (${s.class})</option>`;
+        });
+    }
+
+    function addCategory() {
+        const container = document.getElementById('categoriesContainer');
+        const div = document.createElement('div');
+        div.className = 'category-row';
+        div.innerHTML = `
+            <select class="categoryType">
+                <option value="tuition">টিউশন ফি</option>
+                <option value="food">খাবার ফি</option>
+                <option value="other">অন্যান্য</option>
+            </select>
+            <input type="number" class="paidAmount" placeholder="জমা টাকা">
+            <input type="number" class="discountAmount" placeholder="ছাড়">
+            <button type="button" class="btn btn-small btn-danger" onclick="removeCategory(this)">✖</button>
+        `;
+        container.appendChild(div);
+    }
+
+    function removeCategory(btn) {
+        btn.parentElement.remove();
+    }
+
+    document.getElementById('paymentForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const student_id = document.getElementById('studentSelect').value;
+        const payment_month = document.getElementById('paymentMonth').value;
+        if (!student_id || !payment_month) {
+            alert('ছাত্র ও মাস নির্বাচন করুন');
+            return;
+        }
+
+        let tuition_paid = 0, tuition_discount = 0;
+        let food_paid = 0, food_discount = 0;
+        let other_paid = 0, other_discount = 0;
+
+        document.querySelectorAll('.category-row').forEach(row => {
+            const type = row.querySelector('.categoryType').value;
+            const paid = parseInt(row.querySelector('.paidAmount').value) || 0;
+            const disc = parseInt(row.querySelector('.discountAmount').value) || 0;
+            if (type === 'tuition') {
+                tuition_paid += paid;
+                tuition_discount += disc;
+            } else if (type === 'food') {
+                food_paid += paid;
+                food_discount += disc;
+            } else {
+                other_paid += paid;
+                other_discount += disc;
+            }
+        });
+
+        const serverPayload = {
+            student_id, payment_month,
+            tuition_paid, discount_tuition: tuition_discount,
+            food_paid, discount_food: food_discount,
+            other_paid, discount_other: other_discount,
+            received_by: 'admin'
+        };
+
+        const res = await fetch('/api/add_payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(serverPayload)
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            alert(`✅ পেমেন্ট সফল! রসিদ নং: ${data.receipt_no}`);
+            loadPayments();
+            document.getElementById('paymentForm').reset();
+            const container = document.getElementById('categoriesContainer');
+            while (container.children.length > 1) container.removeChild(container.lastChild);
+            const firstRow = container.children[0];
+            firstRow.querySelector('.paidAmount').value = '';
+            firstRow.querySelector('.discountAmount').value = '';
+        } else {
+            alert('ত্রুটি: ' + (data.error || 'পেমেন্ট সংরক্ষণ ব্যর্থ'));
+        }
+    };
+
+    async function loadPayments() {
+        try {
+            const res = await fetch('/api/payments');
+            const payments = await res.json();
+            const tbody = document.getElementById('paymentList');
+            tbody.innerHTML = '';
+            payments.forEach(p => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = p.receipt_no || p.id;
+                row.insertCell(1).innerText = p.student_name || p.student_id;
+                row.insertCell(2).innerText = p.payment_month;
+                row.insertCell(3).innerText = `${p.tuition_paid || 0}/${p.discount_tuition || 0}`;
+                row.insertCell(4).innerText = `${p.food_paid || 0}/${p.discount_food || 0}`;
+                row.insertCell(5).innerText = `${p.other_paid || 0}/${p.discount_other || 0}`;
+                row.insertCell(6).innerText = p.total_paid || 0;
+                row.insertCell(7).innerText = new Date(p.created_at).toLocaleDateString();
+                const actionCell = row.insertCell(8);
+                actionCell.innerHTML = `
+                    <button class="btn btn-small" onclick="viewReceipt(${p.id})">রসিদ</button>
+                    <button class="btn btn-small btn-danger" onclick="voidPayment(${p.id})">ভয়েড</button>
+                `;
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    async function voidPayment(id) {
+        const reason = prompt('ভয়েড করার কারণ লিখুন:');
+        if (!reason) return;
+        const res = await fetch(`/api/void_payment/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reason })
+        });
+        if (res.ok) {
+            alert('পেমেন্ট ভয়েড করা হয়েছে');
+            loadPayments();
+        } else {
+            alert('ভয়েড করতে ব্যর্থ');
+        }
+    }
+
+    function viewReceipt(id) {
+        window.open(`/api/receipt/${id}`, '_blank');
+    }
+
+    loadStudents();
+    loadPayments();
+</script>
+</body>
+</html>

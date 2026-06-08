@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><meta charset="UTF-8"><title>খরচ ব্যবস্থাপনা</title><meta name="viewport" content="width=device-width, initial-scale=1"><script src="https://unpkg.com/lucide@latest"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+:root { --bg-primary:#f8fafc; --bg-secondary:#fff; --bg-sidebar:#0f172a; --text-primary:#0f172a; --border:#e2e8f0; --accent:#3b82f6; --radius:12px; }
+[data-theme="dark"] { --bg-primary:#0f172a; --bg-secondary:#1e293b; --bg-sidebar:#020617; --text-primary:#f1f5f9; --border:#334155; }
+*{margin:0;padding:0;box-sizing:border-box;} body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);}
+.topbar{position:sticky;top:0;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0.75rem 1.5rem;display:flex;justify-content:space-between;align-items:center;}
+.topbar-left{display:flex;gap:1rem;align-items:center;} .menu-btn{width:40px;height:40px;border-radius:8px;background:transparent;border:none;cursor:pointer;}
+.logo{display:flex;align-items:center;gap:0.5rem;font-weight:700;} .icon-btn{width:40px;height:40px;border-radius:8px;background:transparent;border:none;cursor:pointer;}
+.sidebar{position:fixed;top:0;left:-280px;width:270px;height:100dvh;background:var(--bg-sidebar);color:#e2e8f0;transition:0.2s;padding:1.5rem 0;z-index:999;overflow-y:auto;}
+.sidebar.active{left:0;} .sidebar-header{padding:0 1.5rem 1.5rem;border-bottom:1px solid #1e293b;}
+.sidebar-nav{padding:0 0.75rem;} .nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;color:#e2e8f0;text-decoration:none;border-radius:8px;}
+.nav-item:hover{background:#1e293b;color:white;} .nav-item.active{background:var(--accent);color:white;}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);display:none;z-index:998;}
+.overlay.active{display:block;} .content{padding:1.5rem;max-width:1400px;margin:0 auto;}
+.card{background:var(--bg-secondary);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:1.5rem;}
+.btn{background:var(--accent);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;}
+.form-group{margin-bottom:16px;} .form-group label{display:block;margin-bottom:6px;font-weight:500;}
+.form-group input,.form-group select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-primary);}
+table{width:100%;border-collapse:collapse;} th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);}
+@media (min-width:1024px){.sidebar{left:0;}.menu-btn{display:none;}.content{margin-left:270px;}.topbar{margin-left:270px;}}
+</style></head>
+<body>
+<div class="topbar"><div class="topbar-left"><button class="menu-btn" onclick="toggleMenu()"><i data-lucide="menu"></i></button><div class="logo"><i data-lucide="graduation-cap"></i><span>মাদরাসা ERP</span></div></div><div class="topbar-right"><button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun" id="theme-icon"></i></button><button class="icon-btn" onclick="window.location.href='login.html'"><i data-lucide="log-out"></i></button></div></div>
+<div class="sidebar" id="sidebar"><div class="sidebar-header"><div class="logo"><i data-lucide="graduation-cap"></i><span>মাদরাসা ERP</span></div></div><nav class="sidebar-nav"><a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i><span>ড্যাশবোর্ড</span></a><a href="students.html" class="nav-item"><i data-lucide="users"></i><span>ছাত্র তালিকা</span></a><a href="payment.html" class="nav-item"><i data-lucide="wallet"></i><span>পেমেন্ট</span></a><a href="expenses.html" class="nav-item active"><i data-lucide="receipt"></i><span>খরচ</span></a><a href="reports.html" class="nav-item"><i data-lucide="bar-chart-2"></i><span>রিপোর্ট</span></a><a href="inactive_students.html" class="nav-item"><i data-lucide="archive"></i><span>নিষ্ক্রিয় ছাত্র</span></a><a href="settings.html" class="nav-item"><i data-lucide="settings"></i><span>সেটিংস</span></a></nav></div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="content"><div class="card"><h3>নতুন খরচ যোগ করুন</h3><form id="expenseForm"><div class="form-group"><label>ক্যাটাগরি</label><select id="category"><option>Salary</option><option>Electricity</option><option>Stationery</option><option>Maintenance</option><option>Other</option></select></div><div class="form-group"><label>পরিমাণ</label><input type="number" id="amount" required></div><div class="form-group"><label>বিবরণ</label><input type="text" id="description"></div><div class="form-group"><label>তারিখ</label><input type="date" id="expenseDate"></div><button type="submit" class="btn">যোগ করুন</button></form></div><div class="card"><h3>খরচের তালিকা</h3><table><thead><tr><th>তারিখ</th><th>ক্যাটাগরি</th><th>পরিমাণ</th><th>বিবরণ</th><th>অ্যাকশন</th></tr></thead><tbody id="expenseList"></tbody></table></div></div>
+<script>
+lucide.createIcons(); let expenses=[];
+function toggleMenu(){document.getElementById("sidebar").classList.toggle("active");document.getElementById("overlay").classList.toggle("active");}
+function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme');const n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('theme-icon').setAttribute('data-lucide',n==='dark'?'moon':'sun');lucide.createIcons();}
+const saved=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',saved);document.getElementById('theme-icon').setAttribute('data-lucide',saved==='dark'?'moon':'sun');
+async function loadExpenses(){const r=await fetch('/api/expenses');expenses=await r.json();const tbody=document.getElementById('expenseList');tbody.innerHTML='';expenses.forEach(e=>{const row=tbody.insertRow();row.insertCell(0).innerText=e.date;row.insertCell(1).innerText=e.category;row.insertCell(2).innerText=e.amount;row.insertCell(3).innerText=e.description||'';row.insertCell(4).innerHTML=`<button class="btn btn-small" style="background:#ef4444" onclick="deleteExpense(${e.id})">ডিলিট</button>`;});}
+async function deleteExpense(id){if(confirm('ডিলিট?')){await fetch(`/api/delete_expense/${id}`,{method:'DELETE'});loadExpenses();}}
+document.getElementById('expenseForm').onsubmit=async(e)=>{e.preventDefault();const payload={category:document.getElementById('category').value,amount:document.getElementById('amount').value,description:document.getElementById('description').value,date:document.getElementById('expenseDate').value||new Date().toISOString().slice(0,10)};await fetch('/api/add_expense',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});loadExpenses();document.getElementById('expenseForm').reset();};
+loadExpenses();
+</script>
+</body>
+</html>
