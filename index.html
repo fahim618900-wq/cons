@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+</head>
+<body>
+  <p>Redirecting, please wait...</p>
+
+  <script>
+    // url.txt থেকে লিংক পড়া
+    fetch('url.txt')
+      .then(response => response.text())
+      .then(url => {
+        url = url.trim(); // extra space/newline remove
+
+        if (url) {
+          window.location.href = url; // redirect
+        } else {
+          document.body.innerHTML = "No URL found in url.txt";
+        }
+      })
+      .catch(err => {
+        document.body.innerHTML = "Error loading URL file";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
