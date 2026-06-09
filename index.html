@@ -2,14 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
 
   <script>
-    fetch('url.txt')
-      .then(res => res.text())
+    // ক্যাশিং সমস্যা এড়াতে ইউআরএল-এর সাথে টাইমস্ট্যাম্প যোগ করা হয়েছে
+    fetch('url.txt?t=' + new Date().getTime())
+      .then(res => {
+        if (!res.ok) throw new Error('File not found');
+        return res.text();
+      })
       .then(url => {
         url = url.trim();
-        if (url) {
+        // ইউআরএলটি মূলত http বা https দিয়ে শুরু হয়েছে কিনা তা নিশ্চিত করা
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
           window.location.replace(url); // fast redirect
         }
       })
@@ -18,7 +24,6 @@
       });
   </script>
 </head>
-
 <body>
 </body>
 </html>
