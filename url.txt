@@ -1,1 +1,1 @@
-https://api.trycloudflare.com
+https://strong-doug-recovery-completed.trycloudflare.com
