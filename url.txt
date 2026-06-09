@@ -1,1 +1,1 @@
-https://minus-extent-verbal-cruises.trycloudflare.com
+https://api.trycloudflare.com
