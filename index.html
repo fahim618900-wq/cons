@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <title>Redirecting...</title>
 
   <script>
-    // ক্যাশিং সমস্যা এড়াতে ইউআরএল-এর সাথে টাইমস্ট্যাম্প যোগ করা হয়েছে
+    // ফাইলের নামের শেষে ইউনিক টাইমস্ট্যাম্প (?t=...) যোগ করা হয়েছে যেন ব্রাউজার প্রতিবার নতুন ফাইল ডাউনলোড করে
     fetch('url.txt?t=' + new Date().getTime())
       .then(res => {
         if (!res.ok) throw new Error('File not found');
@@ -14,7 +19,6 @@
       })
       .then(url => {
         url = url.trim();
-        // ইউআরএলটি মূলত http বা https দিয়ে শুরু হয়েছে কিনা তা নিশ্চিত করা
         if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
           window.location.replace(url); // fast redirect
         }
