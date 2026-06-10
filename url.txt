@@ -1,1 +1,1 @@
-https://scientists-gamma-growing-consciousness.trycloudflare.com
+https://api.trycloudflare.com
