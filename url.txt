@@ -1,1 +1,1 @@
-https://consequences-kenneth-seq-picks.trycloudflare.com
+https://api.trycloudflare.com
