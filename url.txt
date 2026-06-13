@@ -1,1 +1,1 @@
-https://convert-emperor-newspapers-tiger.trycloudflare.com
+https://api.trycloudflare.com
