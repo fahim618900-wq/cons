@@ -1,1 +1,1 @@
-https://api.trycloudflare.com
+https://next-set-creatures-era.trycloudflare.com
