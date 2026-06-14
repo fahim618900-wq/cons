@@ -1,1 +1,1 @@
-https://verse-visited-desired-coat.trycloudflare.com
+https://api.trycloudflare.com
