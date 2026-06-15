@@ -1,1 +1,1 @@
-https://improved-occasions-recipients-demographic.trycloudflare.com
+https://api.trycloudflare.com
